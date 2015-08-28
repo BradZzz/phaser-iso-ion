@@ -1,0 +1,49 @@
+/*! app-mobile.less */
+/*! elements.less
+ *
+ * Uses elements derived from LESS Elements 0.9 by Dmitry Fadeyev
+ * (http://lesselements.com)
+ *
+ * NOTE: the css version of this file is auto-generated, so only edit the original
+ * less version if you don't want your changes to be overwritten.
+ */
+.unselectable {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none !important;
+}
+.mobile-hidden {
+  display: none !important;
+}
+.mobile-only {
+  display: inherit !important;
+}
+md-card {
+  max-width: 95% !important;
+}
+.purchase-card .purchase-form {
+  width: 95%;
+}
+.section-faq .qa .answer {
+  margin-left: 0.2em;
+}
+.section-intro .logo {
+  max-width: 100%;
+}
+.section-intro .steps li {
+  white-space: normal;
+}
+.content-wrapper {
+  width: 100%;
+  margin: 0 0.2em;
+}
+.se-device-preview {
+  margin: 1em 0;
+}
+.legal-card {
+  width: 95%;
+}

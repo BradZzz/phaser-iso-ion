@@ -1,0 +1,21 @@
+<md-dialog aria-label="Add Message">
+  <md-dialog-content>
+    <h3>Add Message</h3>
+
+    <md-input-container>
+      <label>Media URL</label>
+      <input ng-model="message.media">
+    </md-input-container>
+  </md-dialog-content>
+
+  <div class="md-actions" layout="row">
+    <span flex></span>
+    <md-button ng-click="onCancel()" class="md-background">
+      Cancel
+    </md-button>
+
+    <md-button ng-disabled="!message.media" ng-click="onSave()" class="md-primary">
+      Save
+    </md-button>
+  </div>
+</md-dialog>

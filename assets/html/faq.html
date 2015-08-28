@@ -1,0 +1,53 @@
+<div class="section-faq" layout="column">
+  <div class="content-wrapper">
+    <md-content class="transparent">
+      <md-card class="faq-card">
+        <md-card-content>
+          <h2 class="center">FAQ</h2>
+
+          <div class="qa">
+            <h3 class="question">What is this?!</h3>
+            <p class="answer">Text Blast is a service which lets you bombard your friends with GIFs, images, and text MMS messages.</p>
+          </div>
+
+          <div class="qa">
+            <h3 class="question">What countries and numbers are supported?</h3>
+            <p class="answer">Currently, only US &amp; Canadian (+1) numbers are supported.</p>
+          </div>
+
+          <div class="qa">
+            <h3 class="question">Can a recipient stop the message blast?</h3>
+            <p class="answer">Yes, you may opt out of receiving further texts by responding STOP to any incoming message. We use <a href="https://www.twilio.com/">Twilio</a> to send all texts, and Twilio supports industry standard <a href="https://www.twilio.com/help/faq/sms/does-twilio-support-stop-block-and-cancel-aka-sms-filtering">SMS STOP filtering</a>.</p>
+          </div>
+
+          <div class="qa">
+            <h3 class="question">How do I pay? Is it secure?</h3>
+            <p class="answer">We accept VISA, Mastercard, and American Express card payments. All payments are processed securely by Stripe over SSL (more details <a href="https://stripe.com/help/security">here</a>).</p>
+          </div>
+
+          <div class="qa">
+            <h3 class="question">What information do you store?</h3>
+            <p class="answer">We store your name and the recipient's number while an order is active. Once an order is complete or aborts because of too many MMS failures, it is permanently deleted from our database. We promise <b>never</b> to sell or distribute any phone numbers obtained through the Text Blast service. Additionally, Stripe allows us to securely process payments without our backend ever encountering or storing payment info. For more details, please refer to our <a href="/legal#privacy-policy">privacy policy</a> and <a href="/legal#terms-of-use">terms of use</a>.</p>
+          </div>
+
+          <div class="qa">
+            <h3 class="question">Want to see a different category?</h3>
+            <p class="answer">We'd love your suggestions and feedback. Feel free to hit us up at <a href="mailto:support@textblast.io">support@textblast.io</a>!</p>
+          </div>
+
+          <div class="qa">
+            <h3 class="question">Where did the idea for Text Blast come from?</h3>
+            <p class="answer">We were inspired by a handful of similar sites that launched recently, notably <a href="https://goatattack.com">Goat Attack</a>, <a href="https://www.catattack.co">Cat Attack</a>, <a href="http://pugaday.co">Pug a Day</a>, and <a href="https://corgisplash.com">Corgi Splash</a>. Text Blast differentiates itself from these other options by allowing people to choose from a wide variety of categories and focusing on more engaging GIF content.</p>
+          </div>
+
+          <div ng-if="$state.includes('category')" class="qa" ng-repeat="qa in category.faq">
+            <h3 class="question">{{qa.question}}</h3>
+            <p class="answer">{{qa.answer}}</p>
+          </div>
+        </md-card-content>
+      </md-card>
+    </md-content>
+
+    <div ng-include="'/assets/html/footer.html'"></div>
+  </div>
+</div>

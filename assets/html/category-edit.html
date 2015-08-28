@@ -1,0 +1,30 @@
+<div class="section-main fit" ng-class="('category-' + category.slug)">
+  <md-card ng-if="!loaded">
+    <md-card-content class="no-padding">
+      Loading...
+    </md-card-content>
+  </md-card>
+
+  <div ng-if="loaded" layout="column">
+    <div flex layout="row" layout-align="center center" style="margin-top: 1em;">
+      <md-button class="md-fab md-primary" style="font-size: 1.5em;" ng-click="onAddMessage()" aria-label="add message">
+        <span class="ion-plus-round"></span>
+      </md-button>
+    </div>
+
+    <md-content flex layout="row" layout-align="space-around center" layout-wrap class="transparent">
+      <md-card ng-repeat="message in messages">
+        <md-card-content class="no-padding">
+          <div class="message">
+            <se-editable-img ng-if="message.media" model="message.media" controls="delete" id="message._id"></se-editable-img>
+
+            <md-input-container>
+              <label>Caption</label>
+              <input ng-model="message.text" ng-blur="onMessageBlur(message)">
+            </md-input-container>
+          </div>
+        </md-card-content>
+      </md-card>
+    </md-content>
+  </div>
+</div>

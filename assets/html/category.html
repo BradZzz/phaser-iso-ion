@@ -1,0 +1,111 @@
+<div ng-class="('category-' + category.slug)">
+  <div class="section-intro" layout="column">
+    <div layout="row" layout-align="center center">
+      <a href="/"><img ng-if="category.logo" flex="38" flex-sm="100" class="logo" ng-src="{{category.logo}}" alt="Logo" ng-class="{ 'small-logo': (category.slug === 'acid') }" />
+        <img ng-if="!category.logo" flex="38" flex-sm="100" class="logo" src="/assets/img/text-blast-logo.png" alt="Text Blast Logo" /></a>
+    </div>
+
+    <div ng-if="category.subtitle" layout="row" layout-align="center center">
+      <img flex="25" flex-sm="90" class="subtitle" ng-src="{{category.subtitle}}" alt="text blast your friends" />
+    </div>
+
+    <h2 class="subtitle center" ng-if="!category.subtitle">Blast your friends with annoying texts!</h2>
+
+    <div class="steps">
+      <h3>Easy As:</h3>
+
+      <ol ng-if="!category.steps.length">
+        <li>Choose a friend to annoy</li>
+        <li>Enter their number and customize your blast</li>
+        <li>They'll receive a blast of fun texts!</li>
+      </ol>
+
+      <ol ng-if="category.steps.length">
+        <li ng-repeat="step in category.steps">{{step}}</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section-main fit" layout="column" layout-fill>
+    <md-content flex layout-sm="column" layout-gt-sm="row" layout-align="space-around center" layout-wrap class="transparent">
+      <md-card flex-order-sm="2" class="purchase-card">
+        <md-card-content class="no-padding">
+          <form name="purchaseForm" class="purchase-form" ng-submit="onPurchase()" novalidate layout-padding>
+            <h2 class="center">Purchase</h2>
+
+            <section>
+              <h3><span class="ion-android-textsms"></span> Customize</h3>
+
+              <md-input-container>
+                <label>Recipient's Number</label>
+                <input ng-model="order.toNumber" type="tel">
+              </md-input-container>
+
+              <md-input-container>
+                <label>Your Name</label>
+                <input ng-model="order.fromName">
+              </md-input-container>
+
+              <div layout="row" layout-sm="column" layout-align="space-between center">
+                <md-select placeholder="Pack Size" ng-model="order.size" flex-gt-sm="50">
+                  <md-option ng-repeat="size in config.sizes" value="{{size.value}}">{{size.title}} ({{size.value}} / ${{size.price}})</md-option>
+                </md-select>
+
+                <md-select placeholder="Interval" ng-model="order.interval">
+                  <md-option ng-repeat="interval in config.intervals" value="{{interval.value}}">Interval {{interval.title}}</md-option>
+                </md-select>
+              </div>
+
+              <!--<p ng-if="order.toNumber && order.size">We will send {{order.toNumber}} a total of {{order.size}} messages.<span ng-if="order.interval"> {{config.intervalMap[order.interval].desc}}</span></p>-->
+
+              <md-checkbox ng-model="order.hasCustomMessage" aria-label="Custom Message" class="md-accent">
+                Custom Message? (+ $0.50)
+              </md-checkbox>
+
+              <div class="animated" ng-if="order.hasCustomMessage">
+                <textarea class="custom-message" ng-model="order.customMessage" maxlength="120"></textarea>
+                <p class="md-caption">Optionally add a custom welcome message that will be sent before any other messages. (Max 120 characters)</p>
+              </div>
+            </section>
+
+            <section>
+              <h3><span class="ion-card"></span> Billing</h3>
+
+              <md-input-container>
+                <label>Card Number</label>
+                <input type="text" ng-model="billing.cardNumber" cc-number cc-type="billing.cardType" data-stripe="number" />
+              </md-input-container>
+
+              <div layout="row" cc-exp>
+                <md-input-container flex="33">
+                  <label>CVC</label>
+                  <input type="text" ng-model="billing.cvc" cc-cvc cc-type="billing.cardType" data-stripe="cvc" />
+                </md-input-container>
+
+                <md-input-container flex="33">
+                  <label>Exp Month (MM)</label>
+                  <input ng-model="billing.expMonth" cc-exp-month />
+                </md-input-container>
+
+                <md-input-container flex="33">
+                  <label>Exp Year (YY)</label>
+                  <input ng-model="billing.expYear" cc-exp-year />
+                </md-input-container>
+              </div>
+            </section>
+
+            <section layout="row" layout-align="space-around center" class="no-padding">
+              <md-button type="submit" class="md-raised md-primary" ng-disabled="!isPurchaseReady()">Buy<span> (${{orderTotal()}})</span></md-button>
+            </section>
+
+            <p class="md-caption">* We need your name to comply with spam regulations and to inform your friend who is sending the blast.</p>
+          </form>
+        </md-card-content>
+      </md-card>
+
+      <se-device-preview flex-order-sm="1" category="{{category.slug}}"></se-device-preview>
+    </md-content>
+  </div>
+
+  <div ng-include="'/assets/html/faq.html'"></div>
+</div>

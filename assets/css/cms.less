@@ -1,0 +1,119 @@
+/*! cms.less */
+
+@import "elements.less";
+
+.message {
+  se-editable-img {
+    img {
+      max-width:  200px;
+      max-height: 200px;
+    }
+  }
+}
+
+.img-controls-wrapper {
+  position: relative;
+  display: inline-block;
+  line-height: 1em;
+  border: 2px solid transparent;
+  .rounded(4px);
+
+  &:hover {
+    border: 2px solid rgba(0,0,0,0.2);
+    .img-controls {
+      opacity: 1;
+      .transition(all, 0s, linear);
+    }
+  }
+
+  .img-controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 1.4em;
+    background: rgba(0,0,0,0.7);
+    opacity: 0;
+    white-space: nowrap;
+
+    .rounded(4px);
+    .transition();
+
+    .img-control {
+      display: inline-block;
+      color: #fff;
+      padding: .2em .5em;
+
+      &:hover {
+        background: #fff;
+        color: #000;
+      }
+    }
+
+    .img-control:first-child {
+      padding-left: .5em;
+      .border-radius(0, 0, 4px, 4px);
+    }
+
+    .img-control:not(:first-child) {
+      margin-left: -0.25em;
+    }
+
+    .img-control:last-child {
+      -webkit-border-top-right-radius: 4px;
+      -webkit-border-bottom-right-radius: 4px;
+      -moz-border-top-right-radius: 4px;
+      -moz-border-bottom-right-radius: 4px;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+      .background-clip(padding-box);
+    }
+  }
+
+  .placeable-img {
+    position: absolute;
+    cursor: move;
+  }
+}
+
+.img-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 1.4em;
+  background: rgba(0,0,0,0.7);
+  opacity: 0;
+  white-space: nowrap;
+
+  .rounded(4px);
+  .transition();
+
+  .img-control {
+    display: inline-block;
+    color: #fff;
+    padding: .2em .5em;
+
+    &:hover {
+      background: #fff;
+      color: #000;
+    }
+  }
+
+  .img-control:first-child {
+    padding-left: .5em;
+    .border-radius(0, 0, 4px, 4px);
+  }
+
+  .img-control:not(:first-child) {
+    margin-left: -0.25em;
+  }
+
+  .img-control:last-child {
+    -webkit-border-top-right-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -moz-border-top-right-radius: 4px;
+    -moz-border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    .background-clip(padding-box);
+  }
+}

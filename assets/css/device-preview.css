@@ -1,0 +1,63 @@
+/*! device-preview.less */
+/*! elements.less
+ *
+ * Uses elements derived from LESS Elements 0.9 by Dmitry Fadeyev
+ * (http://lesselements.com)
+ *
+ * NOTE: the css version of this file is auto-generated, so only edit the original
+ * less version if you don't want your changes to be overwritten.
+ */
+.unselectable {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none !important;
+}
+.se-device-preview .device {
+  position: relative;
+  width: 300px;
+  height: 619px;
+  background: url("/assets/img/iphone-6-silver.png") no-repeat;
+}
+.se-device-preview .app {
+  position: absolute;
+  left: 18px;
+  top: 77px;
+  width: 264px;
+  height: 465px;
+  background: url("/assets/img/imessage.png") no-repeat;
+  background-size: 264px 465px;
+}
+.se-device-preview .messages-container {
+  position: absolute;
+  top: 46px;
+  left: 0;
+  width: 100%;
+  height: 388px;
+  overflow: hidden;
+}
+.se-device-preview .messages {
+  position: absolute;
+  bottom: 1.5em;
+  left: 0.5em;
+}
+.se-device-preview .messages .message {
+  width: 70%;
+  margin-top: 3em;
+}
+.se-device-preview .messages .message img {
+  max-width: 100%;
+  -webkit-border-radius: 16px;
+  -moz-border-radius: 16px;
+  border-radius: 16px;
+}
+.se-device-preview .messages .message p {
+  padding: 8px;
+  background: #bbb;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+}

@@ -1,0 +1,55 @@
+<div class="section-intro" layout="column">
+  <div layout="row" layout-align="center center">
+    <img flex="38" flex-sm="100" class="logo" src="/assets/img/text-blast-logo.png" alt="Text Blast Logo" />
+  </div>
+
+  <h2 class="subtitle center">Blast your friends with annoying texts!</h2>
+
+  <div class="steps">
+    <h3>Easy As:</h3>
+
+    <ol ng-if="!category.steps.length">
+      <li>Choose a category and friend to annoy</li>
+      <li>Enter their number and customize your blast</li>
+      <li>They'll receive a blast of fun / annoying texts!</li>
+    </ol>
+
+    <ol ng-if="category.steps.length">
+      <li ng-repeat="step in category.steps">{{step}}</li>
+    </ol>
+  </div>
+</div>
+
+<div class="fit section-gallery" layout="column" layout-align="center center" layout-fill>
+  <div class="categories" layout="row" layout-align="space-between center" layout-wrap>
+    <div class="category flip-container" ng-repeat="category in categories" ng-class="{ flipped: category.flipped }" ng-mouseover="category.flip()">
+      <a ng-href="/{{category.slug}}" class="flipper">
+        <div class="front" layout="column" layout-align="center center">
+          <md-card flex>
+            <md-card-content flex layout="column">
+              <h3>{{category.title || category.slug}}</h3>
+
+              <div flex layout="column" layout-align="center center">
+                <img flex ng-src="{{category.messages[category.frontOffset % category.messages.length].media}}" />
+              </div>
+            </md-card-content>
+          </md-card>
+        </div>
+
+        <div class="back" layout="column" layout-align="center center">
+          <md-card flex>
+            <md-card-content flex layout="column">
+              <h3>{{category.title || category.slug}}</h3>
+
+              <div flex layout="column" layout-align="center center">
+                <img flex ng-src="{{category.messages[category.backOffset % category.messages.length].media}}" />
+              </div>
+            </md-card-content>
+          </md-card>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div ng-include="'/assets/html/faq.html'"></div>

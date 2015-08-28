@@ -1,0 +1,8 @@
+<div class="img-controls-wrapper">
+  <div class="img-controls">
+    <a ng-if="controls.delete && model" class="img-control delete"  href ng-click="onDeleteImage($event)" title="Delete"><span class="ion-close-round"></span></a>
+  </div>
+
+  <img ng-if="model" ng-src="{{ model ? (model + '?o=' + cacheBust ) : defaultImage }}" class="img-responsive" />
+  <div class="default" ng-if="!model"></div>
+</div>

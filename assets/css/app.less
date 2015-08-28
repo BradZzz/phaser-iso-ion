@@ -1,0 +1,220 @@
+/*! app.less */
+
+@import "elements.less";
+@import "definitions.less";
+
+body {
+  .sesh-font();
+  padding: 0;
+  margin: 0;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+a {
+  color: #648DAE;
+
+  &:hover, &:active {
+    text-decoration: none;
+  }
+
+  &:active {
+    color: #1B5F97;
+  }
+}
+
+.purchase-card {
+  max-width: 512px;
+
+  .purchase-form {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
+
+.faq-card {
+  max-width: 740px;
+
+  md-card-content {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
+
+md-card {
+  max-width: 100% !important;
+
+  section {
+    padding: 8px;
+  }
+}
+
+md-input-container {
+  padding-bottom: 8px;
+}
+
+md-select {
+  padding: 16px 2px;
+}
+
+textarea {
+  resize: none;
+}
+
+.custom-message {
+  width: 100%;
+  height: 2em;
+}
+
+h2, h3 {
+  .sesh-font();
+  color: #42A5F5;
+  margin: 0.1em 0 0;
+}
+
+h3.title {
+  color: #000;
+}
+
+ol, ul {
+  margin-bottom: 0;
+}
+
+p {
+  margin: 0.5em 0;
+}
+
+.animated.ng-enter, .animated.ng-leave {
+  .transition(all, 0.3s, ease-out);
+}
+
+.animated.ng-enter, .animated.ng-leave.ng-leave-active {
+  opacity: 0;
+  max-height: 0;
+}
+
+.animated.ng-leave, .animated.ng-enter.ng-enter-active {
+  opacity: 1;
+  max-height: 200px;
+}
+
+.section-intro {
+  background: #fff;
+  padding: 1em;
+
+  .logo {
+    max-width: 500px;
+    margin-bottom: 1em;
+  }
+
+  .small-logo {
+    max-width: 200px;
+  }
+
+  img.subtitle {
+    max-width: 450px;
+  }
+
+  .subtitle {
+    margin-bottom: 1em;
+  }
+
+  .steps {
+    margin: 0 auto;
+
+    h3 {
+      color: #000;
+      text-align: center;
+    }
+
+    li {
+      margin-bottom: 0.5em;
+      white-space: nowrap;
+    }
+  }
+}
+
+.section-main, .section-legal, .section-gallery {
+  @src: #4B62A8;
+  @dest: #528EDF;
+
+  background: @dest;
+  background-image: -webkit-linear-gradient(to bottom, @src, @dest);
+  background-image:    -moz-linear-gradient(to bottom, @src, @dest);
+  background-image:      -o-linear-gradient(to bottom, @src, @dest);
+  background-image:         linear-gradient(to bottom, @src, @dest);
+}
+
+.section-faq {
+  @src: #528EDF;
+  @dest: #4B62A8;
+
+  background-image: -webkit-linear-gradient(to bottom, @src, @dest);
+  background-image:    -moz-linear-gradient(to bottom, @src, @dest);
+  background-image:      -o-linear-gradient(to bottom, @src, @dest);
+  background-image:         linear-gradient(to bottom, @src, @dest);
+
+  .qa {
+    margin-top: 1em;
+
+    .answer {
+      margin-left: 2em;
+    }
+  }
+}
+
+.content-wrapper {
+  width: 75%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.footer {
+  margin: 3em auto 0.5em;
+  color: #fff;
+
+  .legal {
+    color: #fff;
+  }
+
+  .fb-share-button {
+    margin-left: 1em;
+    position: relative;
+    top: -3px;
+  }
+}
+
+.legal-card {
+  width: 75%;
+  max-width: 900px;
+  min-width: 320px;
+  margin: 4em auto 0;
+
+  md-card-content {
+    width: 90%;
+    margin: 1em auto;
+  }
+
+  h3 {
+    margin-top: 1em;
+  }
+}
+
+.category-death-note {
+  .section-intro {
+    .logo {
+      max-width: 256px;
+    }
+  }
+}
