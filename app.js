@@ -13,7 +13,7 @@ var bodyParser   = require('body-parser')
 var utils        = require('./lib/utils')
 var app          = module.exports = express()
 
-var TOKEN_SECRET = process.env.TOKEN_SECRET || 'sesh-blast-v1.0.1'
+var TOKEN_SECRET = process.env.TOKEN_SECRET || 'dotdashdot-cast'
 
 mongoose.connect(process.env.MONGODB)
 
@@ -65,6 +65,7 @@ if (app.get('prod')) {
 }
 
 // setup routes
+require('./routes/cast')(app)
 require('./routes/seo')(app)
 require('./routes/order')(app)
 require('./routes/message')(app)

@@ -7,7 +7,8 @@ var modules = [
   'angular-flash.service',
   'angular-flash.flash-alert-directive',
   'angular-loading-bar',
-  'credit-cards'
+  'credit-cards',
+  'ui.bootstrap'
 ]
 
 var app = angular.module('blast', modules)
@@ -41,6 +42,15 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
       url: "/phaser-battle",
       templateUrl: "/assets/html/phaser/phaser-battle.html",
       controller: "PhaserBattleCtrl"
+    })
+    .state('cast', {
+      url: "/cast",
+      templateUrl: "/assets/html/cast/cast.html",
+      controller: "MediaCtrl"
+    })
+    .state('mpl', {
+      url: "/mpl",
+      templateUrl: "/assets/html/cast/mpl.html"
     })
     .state('category', {
       abstract: true,

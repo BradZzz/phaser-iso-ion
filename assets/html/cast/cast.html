@@ -1,0 +1,322 @@
+<head>
+<title>Google Cast Sample</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:700' rel='stylesheet' type='text/css'>
+<script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
+
+<style>
+
+html {
+  height: 100%;
+  background: red;
+}
+
+a {
+  cursor: pointer;
+}
+
+a:hover {
+  background-color: #d7dbdf;
+}
+
+body {
+  color: white;
+  background-color: black;
+  font-family: 'Roboto', "Open Sans", "Verdana", Georgia, Serif;
+}
+
+.stretch { 
+  width : 100%;
+}
+
+.half_stretch {
+  width : 50%;
+}
+
+.left {
+  float : left;
+}
+
+.div_border {
+  border: 5px solid red;
+}
+
+.element_border {
+  border-color: white !important;
+  border-width: 1px !important;
+}
+
+.episode_container {
+  height:42%; 
+  width: 100%; 
+  display: inline-block; 
+  overflow-y: auto;
+  font-family: 'PT Sans Narrow', sans-serif;
+}
+
+.list-item.show-selection {
+  -webkit-transition: background .25s linear;
+  -moz-transition: background .25s linear;
+  -o-transition: background .25s linear;
+  transition: background .25s linear;
+}
+
+.list-item {
+  background-color: black;
+  height: 60px;
+  cursor: pointer;
+}
+
+.list-item:hover {
+  background-color: #004D99;
+}
+
+.list-item:active {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+  background-color: #003366;
+}
+
+.title_header {
+  width: 100%; 
+  padding: 30px 0 50px 50px;
+	font-size: xx-large;
+	color: white;
+	background-color: red;
+	font-weight: bold;
+}
+
+.title_nav {
+  width: 100%;
+  background: red;
+  padding: 5px 0 10px 20px;
+  display: inline-block;
+}
+
+.control_container {
+  padding:5px;
+}
+
+.control_header {
+  display: inline-block;
+  margin: 10px 10px 10px 10px;
+}
+
+.input_span {
+	width: 30%;
+	float: left;
+	padding-left: 15px;
+}
+
+.input_holder {
+  padding:2px 5px 0 5px;
+}
+
+.unselectable {
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   -khtml-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   -o-user-select: none;
+   user-select: none;
+}
+
+#poster {}
+
+.config_button {
+  -webkit-transition: all .25s ease-out;
+  -moz-transition: all .25s ease-out;
+  -o-transition: all .25s ease-out;
+  transition: all .25s ease-out;
+	background-color: red;
+	padding: 5px 10px 5px 10px;
+	border: none;
+	margin: 0 10px 0 10px;
+	outline: none;
+}
+
+.config_button:hover {
+  background-color: #F00000;
+}
+
+.config_button:active {
+  background-color: #BD0000;
+}
+
+.image_inner {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.overlay {
+  -webkit-transition: all .25s ease-out;
+  -moz-transition: all .25s ease-out;
+  -o-transition: all .25s ease-out;
+  transition: all .25s ease-out;
+  z-index: 2;
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.overlay span {
+  text-align: center;
+	display: block;
+	padding: 20px;
+}
+
+.play_button {
+  padding-top: 30px;
+  height: 100px;
+  width: 175px;
+  display: block;
+  font-size: x-large;
+  background-color: #F00000;
+  cursor: pointer;
+  margin: 40px 10px 10px 30px;
+  border: 2px solid;
+  border-radius: 25px;
+  text-align: center;
+}
+
+.play_button:hover {
+  background-color: #E00000;
+}
+
+.play_button:active {
+  background-color: #C70000;
+}
+
+.clickable {
+  background: white;
+  border-radius: 5px;
+}
+
+.mediaSelected  {
+  background: #FCB900 !important;
+}
+
+.current-media-container {
+  text-align: left;
+  display: block;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.volume_holder {
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.inputContainer {
+    width: 100%;
+    height: 40px;
+    padding: 0 10px 0 10px;
+}
+.inputContainer label {
+    float: left;
+    margin-right: 5px;
+    padding: 0 10px 0 10px;
+}
+.inputContainer div {
+    overflow: hidden;
+}
+.inputContainer input {
+    width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block
+}
+.unselectable {
+	-webkit-user-select: none; /* Chrome/Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+ */
+	
+	/* Rules below not implemented in browsers yet */
+	-o-user-select: none;
+	user-select: none;
+}
+
+</style>
+</head>
+<body>
+  <div class="title_header">
+    MyTv Cast
+  </div>
+  <div class="title_nav">
+    <button type="button" class="btn btn-default navbar-btn glyphicon glyphicon-repeat" style="margin: 0px 30px 0px 0px; float:left" ng-click="load()"></button>
+	  <ul class="nav nav-pills" style="float: left; padding-right: 450px;">
+		  <li role="presentation" class="active television_placeholder clickable"><a href="#" ng-click="changeTelevision(true)">Television</a></li>
+		  <li role="presentation" class="movies_placeholder clickable" style="margin-left: 10px;"><a href="#" ng-click="changeTelevision(false)">Movies</a></li>
+		</ul>
+		<div class="current-media-container">
+		  Playing: 
+		  <span class="label label-default current-media">None</span>
+		</div>
+  </div>
+  <div style="height: 600px; min-height: 600px;" class="stretch div_border">
+    <div class="half_stretch left hold_scrollable" style="height:100%; display: inline-block; overflow-y: auto; border: 1px solid white">
+	    <ul class="list-group">
+	     <li ng-if="showSelection(meta.isTelevision)" ng-repeat="(show, meta) in media" class="list-group-item list-item unselectable show-selection" ng-click="setShow(show)">
+	      <span style="height:100%; width:100%; display:block; float:left; font-size: x-large;">{{show}}</span>
+	     </li>
+	    </ul>
+	  </div>
+	  <div class="half_stretch left div_border" style="height:100%; border-right: none; border-top: none; border-bottom: none;">
+	     <div style="font-weight: bold; width:30%; height:40%; position: relative;" class="left div_border element_border" ng-mouseenter="showOverlay()" ng-mouseleave="hideOverlay()">
+	       <img id="poster" ng-src="{{curMedia.Poster}}" class="image_inner"/>
+	       <div class="image_inner overlay">
+	         <span style="padding-top: 60px;">{{ curMedia.Genre }}</span>
+	         <br>
+	         <span style="font-size: xx-large;">{{ curMedia.Rating }}</span>
+	       </div>
+	     </div>
+	     <div style="width:70%; height:40%" class="left div_border control_container element_border">
+	       <div style="width:40%;float:left;">
+           <span class="stretch control_header">Local Controls</span>
+           <button ng-click="launchViewer()" class="config_button">Launch viewer</button>
+         </div>
+	       <div style="width:60%;float:left;">
+	         <span class="stretch control_header">Chromecast Controls</span>
+	         <button ng-click="launchApp()" class="config_button">Launch app</button>
+           <button ng-click="stopApp()" class="config_button">Stop app</button>
+	       </div>
+	       <div class="stretch" style="margin-bottom: 15px;">
+	         <div class="stretch control_header">Media Controls</div>
+	         <button ng-click="loadMedia()" class="config_button">(Re)Load Media</button>
+           <button id="playpauseresume" ng-click="playMedia()" class="config_button">Play Media</button>
+           <button ng-click="stopMedia()" class="config_button">Stop Media</button>
+           <!-- <span id="muteText">Mute media</span>
+           <input type="checkbox" onclick="muteMedia(this);"> -->
+	       </div>
+          <div class="inputContainer">
+            <label>Volume</label>
+            <div><input class="volume_holder" type="range" min="0" max="100" step="1" ng-model="volume" ng-mouseup="setReceiverVolume();"></div>
+          </div>
+          <div class="inputContainer">
+			       <label>Progress</label>
+			       <div><input id="progress" type="range" min="1" max="100" value="1" step="1" ng-model="seek" ng-mouseup="seekMedia();"></div>
+			     </div>
+	       </div>
+	       <div style="font-size: large; border-bottom: none !important; padding: 10px 20px 10px 20px; height: 100px; overflow-y: auto; display: inline-block; border: 1px solid white; width:100%; cursor:default;" class="div_border">{{ curMedia.Summary }}</div>
+	       <div class="div_border episode_container hold_scrollable element_border">
+         <ul class="list-group">
+          <li ng-if="television" ng-repeat="ep in curMedia.Eps" ng-class="{ 'mediaSelected' : selectMedia(ep) }" class="list-group-item list-item unselectable" ng-click="play(ep)">
+            <span style="height:100%; width:100%; display:block; float:left; font-size: x-large;">{{ep}}</span>
+          </li>
+          <div ng-if="!television">
+            <span class="play_button" ng-click="play(curMedia.s3_mid)">Play</span>
+          </div>
+         </ul>
+       </div>
+	     </div>
+	  </div>
+  </div>
+</body>
+</html>
