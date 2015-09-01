@@ -43,6 +43,11 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
       templateUrl: "/assets/html/phaser/phaser-battle.html",
       controller: "PhaserBattleCtrl"
     })
+    .state('home', {
+      url: "/home",
+      templateUrl: "/assets/html/cast/cast-home.html",
+      controller: "CastHomeCtrl"
+    })
     .state('cast', {
       url: "/cast",
       templateUrl: "/assets/html/cast/cast.html",

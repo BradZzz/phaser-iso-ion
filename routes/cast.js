@@ -11,32 +11,28 @@ String.prototype.capitalize = function() {
 
 module.exports = function (app) {
   app.get('/api/v1/cast/get', function (req, res) {
-    Media.find({}).exec(function (err, messages) {
-      return res.status(200).json(messages)
+    Media.find({}).exec(function (err, media) {
+      media = _.sortBy(media, 'name')
+      return res.status(200).json(media)
     })
   })
   
   app.get('/api/v1/cast/update', function (req, res) {
 	  loop_folder('tv2/').then(function(results){
-			console.log(results)
 			var promises = []
 			for (var result in results ) {
 				promises.push(update(results[result]))
 			}
 			promises.push(update('movies2/'))
 			Q.all(promises).then(function(results) {
-			  console.log('finished update!')
 			  _.each(results.splice(results.length-1, 1)[0], function(result){
 			    results.push(result)
         })
-			  console.log(results)
-			  console.log('before save')
 			  var promises = []
 			  _.each(results, function(result){
 			    result.name = result.name.replace(/_/g,' ').capitalize()
 			    promises.push(save(result))
 			  })
-			  console.log('before save all')
 				Q.all(promises).then(function(result) {
 				  return res.status(200).json(results)
 				}, function(err) {
@@ -49,7 +45,6 @@ module.exports = function (app) {
   })
   
   function save(result){
-    console.log('saving...')
     if (result.poster === "") {
       console.log('bad value')
       console.log(result)
@@ -77,27 +72,9 @@ module.exports = function (app) {
     }
     omdbApi.get(params, function(err, data) {
         if (err) {
-          console.log('returned meta error')
-          console.log(media.name)
-          console.log(data)
-          console.log(err)
-          console.log('ended meta error')
-          return_count -= 1
-          console.log('Count: ' + return_count)
-          /*media.poster = ""
-          media.plot = ""
-          media.genre = []
-          media.imdbRating = 0
-          media.imdbId = ""
-          media.year = "1900"*/
+          console.err(err, err.stack)
           deferred.resolve(media)
         } else {
-          console.log('returned meta')
-          console.log(media.name)
-          console.log(data)
-          console.log('ended meta')
-          return_count -= 1
-          console.log('Count: ' + return_count)
           media.poster = data.Poster
           media.plot = data.Plot
           media.genre = data.Genre
@@ -105,8 +82,8 @@ module.exports = function (app) {
           media.imdbId = data.imdbID
           media.year = data.Year
           media.runtime = data.Runtime
-          deferred.resolve(media)
         }
+        deferred.resolve(media)
     })
     return deferred.promise
   }
@@ -124,7 +101,7 @@ module.exports = function (app) {
     s3.listObjects({ Bucket: 'mytv.media.out.video', MaxKeys: 100000, Prefix: prefix, Delimiter: delimiter }, function(err, data) {
       var folders = []
       if (err) {
-        console.log(err, err.stack)
+        console.err(err, err.stack)
         deferred.reject(err)
       }
       for (var prefix in data.CommonPrefixes ) {
@@ -149,30 +126,21 @@ module.exports = function (app) {
 		s3.listObjects({ Bucket: 'mytv.media.out.video', MaxKeys: 100000, Prefix: prefix, Delimiter: '/' }, function(err, data) {
 			var folders = []
 			if (err) {
-				console.log(err, err.stack)
+				console.err(err, err.stack)
 				deferred.reject(err)
 			}
 		  if (data.Prefix.indexOf("movie") > -1) {
-			  console.log('movie!')
-			  console.log(data.CommonPrefixes)
 			  var promises = []
-			  return_count += data.CommonPrefixes.length
 			  _.each(data.CommonPrefixes, function(path){
 				  promises.push(checkMedia(path))
 			  })
 			  Q.all(promises).then(function(results) {
-  				console.log('returned!')
-  				console.log(results)
-  				console.log('finished return')
   				deferred.resolve(results)
 			  }, function (err){
-			    console.log('err!')
-			    console.log(err)
+			    console.err('err!')
 			  })
 		  } else {
-		    return_count += 1
 			  var returned = checkMedia(data, data.CommonPrefixes)
-			  //console.log(returned)
 			  deferred.resolve(returned)
 		  }
 		})

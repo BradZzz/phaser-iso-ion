@@ -74,8 +74,7 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
       $scope.folders = data
       console.log($scope.folders)
       
-      _.each($scope.folders, function(value, key, obj) { 
-         console.log(value)
+      _.each($scope.folders, function(value, key, obj) {
          $scope.media[value.name] = {
            Runtime : value.runtime ? value.runtime : "" ,
            Rating : value.imdbRating ? value.imdbRating : "" ,
@@ -86,8 +85,8 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
            Eps : value.episodes ? value.episodes : [],
            isTelevision : value.type === 'tv',
          }
-         //$scope.getMediaMeta(value.name, value.type === 'tv', value.episodes)
       })
+      
     }).error(function(data) {
       console.log('Error1: ' + data)
     })
@@ -124,83 +123,6 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
   
   $scope.showSelection = function(is_television){
     return $scope.television === is_television
-  }
-  
-  $scope.getMediaMeta = function(metaString, television, episodes) {
-    
-    var media_path = ""
-    
-    if ($scope.television) {
-      media_path = metaString
-    }
-    
-    metaString = metaString.replace("tv2/","").replace("movies2/","").replace("/","")
-    
-    return $http({
-      url: 'http://www.omdbapi.com/', 
-      method: "GET",
-      params: { t : metaString.replace(/_/g, '+'), y : '', plot : 'short', r : 'json'},
-      headers: {
-        'Content-Type': 'json'
-      }
-     }).success(function(data) {
-       if (data.Response === "True") {
-         if (television) {
-           $scope.media[data.Title] = {
-               Runtime : data.Runtime ,
-               Rating : data.imdbRating ,
-               Votes : data.imdbVotes ,
-               Genre : data.Genre,
-               Summary : data.Plot,
-               Eps : episodes,
-               Poster : data.Poster,
-               isTelevision : true,
-           }
-         } else {
-           $scope.media[data.Title] = {
-               Runtime : data.Runtime ,
-               Rating : data.imdbRating ,
-               Votes : data.imdbVotes ,
-               Genre : data.Genre,
-               Summary : data.Plot,
-               Poster : data.Poster,
-               s3_mid : media_path,
-               isTelevision : false,
-           }
-         }
-         //console.log($scope.media[data.Title])
-       } else {
-         //We didn't get a response. The media string isn't formatted correctly
-         if (television) {
-           
-           $scope.media[metaString] = {
-               Runtime : "0" ,
-               Rating : "?" ,
-               Votes : "?" ,
-               Genre : "" ,
-               Summary : "No Summary Found" ,
-               Eps : episodes,
-               Poster : "http://i.imgur.com/5H4cX6G.jpg",
-               isTelevision : true,
-           }
-         } else {
-           $scope.media[metaString] = {
-               Runtime : "0" ,
-               Rating : "?" ,
-               Votes : "?" ,
-               Genre : "" ,
-               Summary : "No Summary Found" ,
-               Poster : "http://i.imgur.com/5H4cX6G.jpg",
-               s3_mid : media_path,
-               isTelevision : false,
-           }
-         }
-         $scope.media.full_path = ""
-         //console.log($scope.media[metaString])
-       }
-     }).error(function(data) {
-      console.log('Error1: ' + data)
-     });
   }
   
   $scope.launchViewer = function() {
