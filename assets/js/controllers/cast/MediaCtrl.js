@@ -29,13 +29,8 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
   
   $scope.$on('finish', function () {
     console.log('finished!')
-    console.log($scope.curMedia)
-    console.log($scope.curMedia.Eps)
-    console.log($scope.curMedia.Eps.length)
-    var ep = $scope.curMedia.Eps[Math.floor((Math.random() * $scope.curMedia.Eps.length))]
-    $scope.scopeMediaSelected = ep
-    console.log(ep)
-    $scope.play(ep)
+    $scope.scopeMediaSelected = $scope.curMedia.Eps[Math.floor((Math.random() * $scope.curMedia.Eps.length))]
+    $scope.play($scope.scopeMediaSelected)
   })
     
   $scope.playMedia = function(){
@@ -78,9 +73,20 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
        console.log(data)
       $scope.folders = data
       console.log($scope.folders)
+      
       _.each($scope.folders, function(value, key, obj) { 
          console.log(value)
-         $scope.getMediaMeta(value.name, value.type === 'tv', value.episodes)
+         $scope.media[value.name] = {
+           Runtime : value.runtime ? value.runtime : "" ,
+           Rating : value.imdbRating ? value.imdbRating : "" ,
+           Genre : value.genre ? value.genre : "" ,
+           Summary : value.plot ? value.plot : "" ,
+           Poster : value.poster ? value.poster : "" ,
+           s3_mid : value.type === 'tv' ? value.path : "",
+           Eps : value.episodes ? value.episodes : [],
+           isTelevision : value.type === 'tv',
+         }
+         //$scope.getMediaMeta(value.name, value.type === 'tv', value.episodes)
       })
     }).error(function(data) {
       console.log('Error1: ' + data)

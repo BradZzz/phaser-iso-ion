@@ -8,8 +8,10 @@ var mediaSchema = new mongoose.Schema({
 	type: {type: String, required: true},
 	genre: [{ type: String },],
 	episodes: [{ type: String },],
-	rating: { type: Number },
-	year: { type: Number },
+	runtime: { type: String },
+	imdbRating: { type: Number },
+	imdbId: { type: String },
+	year: { type: String },
 	created: { type: Date, default: Date.now },
 	__v: { type: Number, select: false },
 })

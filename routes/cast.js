@@ -2,8 +2,8 @@ var Media    = require('../models/media')
 //var Channel  = require('../models/channel')
 var Q = require('q')
 var _ = require('underscore')
-var APIClient = require('omdb-api-client')
-var omdb = new APIClient()
+var omdbApi = require('omdb-client')
+var return_count = 0
 
 String.prototype.capitalize = function() {
   return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
@@ -25,15 +25,18 @@ module.exports = function (app) {
 			}
 			promises.push(update('movies2/'))
 			Q.all(promises).then(function(results) {
+			  console.log('finished update!')
 			  _.each(results.splice(results.length-1, 1)[0], function(result){
 			    results.push(result)
         })
 			  console.log(results)
+			  console.log('before save')
 			  var promises = []
 			  _.each(results, function(result){
-			    result.name = result.name.replace("_"," ").capitalize()
+			    result.name = result.name.replace(/_/g,' ').capitalize()
 			    promises.push(save(result))
 			  })
+			  console.log('before save all')
 				Q.all(promises).then(function(result) {
 				  return res.status(200).json(results)
 				}, function(err) {
@@ -46,36 +49,65 @@ module.exports = function (app) {
   })
   
   function save(result){
-    return Media.update(
-        {name: result.name.replace("_"," ").capitalize()}, 
-        {$setOnInsert: result}, 
-        {upsert: true}).exec()
-  }
-  
-  function requestMeta(name) {
-    omdb({t:name, y : '', plot : 'short', r : 'json'}).list().then(function(movie) {
-      console.log(movie);
-    }).catch(function(err) {
-      console.log(err);
-    });
+    console.log('saving...')
+    if (result.poster === "") {
+      console.log('bad value')
+      console.log(result)
+    }
+    return Media.findOneAndUpdate({'name':result.name}, result, {upsert:true}).exec()
   }
   
   function checkMedia(mediaObject, episodes){
-    var deferred = Q.defer()
-    
     var media = {}
     media.path = mediaObject.Prefix
     media.type = mediaObject.Prefix.indexOf('movie') > -1 ? 'movie' : 'tv'
     media.name = mediaObject.Prefix.replace("tv2/","").replace("movies2/","").replace("/","")
-    requestMeta(media.name)
-    media.genre = []
-    media.poster = 'none'
     media.episodes = _.map(episodes, function(episode){
       return episode.Prefix
     })
-    media.rating = 0
-    deferred.resolve(media)
-    
+    return requestMeta(media)
+  }
+  
+  function requestMeta(media) {
+    var deferred = Q.defer()
+    var params = {
+        title: media.name.replace(/_/g, '+').capitalize(),
+        plot: 'short',
+        r: 'json',
+    }
+    omdbApi.get(params, function(err, data) {
+        if (err) {
+          console.log('returned meta error')
+          console.log(media.name)
+          console.log(data)
+          console.log(err)
+          console.log('ended meta error')
+          return_count -= 1
+          console.log('Count: ' + return_count)
+          /*media.poster = ""
+          media.plot = ""
+          media.genre = []
+          media.imdbRating = 0
+          media.imdbId = ""
+          media.year = "1900"*/
+          deferred.resolve(media)
+        } else {
+          console.log('returned meta')
+          console.log(media.name)
+          console.log(data)
+          console.log('ended meta')
+          return_count -= 1
+          console.log('Count: ' + return_count)
+          media.poster = data.Poster
+          media.plot = data.Plot
+          media.genre = data.Genre
+          media.imdbRating = data.imdbRating
+          media.imdbId = data.imdbID
+          media.year = data.Year
+          media.runtime = data.Runtime
+          deferred.resolve(media)
+        }
+    })
     return deferred.promise
   }
   
@@ -124,15 +156,21 @@ module.exports = function (app) {
 			  console.log('movie!')
 			  console.log(data.CommonPrefixes)
 			  var promises = []
+			  return_count += data.CommonPrefixes.length
 			  _.each(data.CommonPrefixes, function(path){
 				  promises.push(checkMedia(path))
 			  })
 			  Q.all(promises).then(function(results) {
-  				//console.log('returned!')
-  				//console.log(results)
+  				console.log('returned!')
+  				console.log(results)
+  				console.log('finished return')
   				deferred.resolve(results)
+			  }, function (err){
+			    console.log('err!')
+			    console.log(err)
 			  })
 		  } else {
+		    return_count += 1
 			  var returned = checkMedia(data, data.CommonPrefixes)
 			  //console.log(returned)
 			  deferred.resolve(returned)
