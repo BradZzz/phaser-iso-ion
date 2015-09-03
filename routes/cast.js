@@ -1,5 +1,5 @@
 var Media    = require('../models/media')
-//var Channel  = require('../models/channel')
+var Channel  = require('../models/channel')
 var Q = require('q')
 var _ = require('underscore')
 var omdbApi = require('omdb-client')
@@ -10,10 +10,25 @@ String.prototype.capitalize = function() {
 }
 
 module.exports = function (app) {
-  app.get('/api/v1/cast/get', function (req, res) {
+  app.get('/api/v1/cast/get/media', function (req, res) {
     Media.find({}).exec(function (err, media) {
       media = _.sortBy(media, 'name')
-      return res.status(200).json(media)
+      if (err){
+        return res.status(500).json({ debug: err })
+      } else {
+        return res.status(200).json(media)
+      }
+    })
+  })
+  
+  app.get('/api/v1/cast/get/channel', function (req, res) {
+    Channel.find({}).exec(function (err, chans) {
+      chans = _.sortBy(chans, 'position')
+      if (err){
+        return res.status(500).json({ debug: err })
+      } else {
+        return res.status(200).json(chans)
+      }
     })
   })
   
@@ -72,16 +87,17 @@ module.exports = function (app) {
     }
     omdbApi.get(params, function(err, data) {
         if (err) {
-          console.err(err, err.stack)
+          console.error(err, err.stack)
           deferred.resolve(media)
         } else {
           media.poster = data.Poster
           media.plot = data.Plot
-          media.genre = data.Genre
+          media.genre = data.Genre.replace(/\s/g, '').split(",")
           media.imdbRating = data.imdbRating
           media.imdbId = data.imdbID
           media.year = data.Year
           media.runtime = data.Runtime
+          media.rated = data.Rated
         }
         deferred.resolve(media)
     })
@@ -101,7 +117,7 @@ module.exports = function (app) {
     s3.listObjects({ Bucket: 'mytv.media.out.video', MaxKeys: 100000, Prefix: prefix, Delimiter: delimiter }, function(err, data) {
       var folders = []
       if (err) {
-        console.err(err, err.stack)
+        console.error(err, err.stack)
         deferred.reject(err)
       }
       for (var prefix in data.CommonPrefixes ) {
@@ -126,7 +142,7 @@ module.exports = function (app) {
 		s3.listObjects({ Bucket: 'mytv.media.out.video', MaxKeys: 100000, Prefix: prefix, Delimiter: '/' }, function(err, data) {
 			var folders = []
 			if (err) {
-				console.err(err, err.stack)
+				console.error(err, err.stack)
 				deferred.reject(err)
 			}
 		  if (data.Prefix.indexOf("movie") > -1) {
@@ -137,7 +153,7 @@ module.exports = function (app) {
 			  Q.all(promises).then(function(results) {
   				deferred.resolve(results)
 			  }, function (err){
-			    console.err('err!')
+			    console.error(err)
 			  })
 		  } else {
 			  var returned = checkMedia(data, data.CommonPrefixes)

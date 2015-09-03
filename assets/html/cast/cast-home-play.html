@@ -1,0 +1,41 @@
+<style>
+  .cast-play {
+    margin-top: 10em;
+  }
+  md-card {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+  }
+  md-content {
+    margin: 1em;
+  }
+  md-button {
+    background-color : rgba(51, 204, 51, 1);
+  }
+  md-button:hover {
+    background-color: rgba(0, 153, 51, 1);
+  }
+
+</style>
+<div class="fit section-gallery" layout-align="center center" layout-fill>
+  <md-content flex class="md-padding fit" layout-fill layout-padding layout-margin>
+    <section layout="row" flex layout-align="end center">
+      <md-button class="ion-edit md-raised md-cornered" aria-label="Edit" ng-click="edit()">
+        <md-tooltip>
+          Edit
+        </md-tooltip>
+      </md-button>
+    </section>
+    <section layout="row" flex layout-align="center center">
+      <label class="md-display-4">{{ title }}</label>
+    </section>
+    <section layout="row" flex layout-align="center end"> 
+      <md-button class="ion-arrow-right-b cast-play md-fab md-raised" aria-label="Play" ng-click="play()">
+        <md-tooltip>
+          Play
+        </md-tooltip>
+      </md-button>
+    </section>
+  </md-content>
+</div>

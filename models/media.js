@@ -4,6 +4,7 @@ var mediaSchema = new mongoose.Schema({
 	name: { type: String, required: true, index: true },
 	poster: {type: String},
 	plot: {type: String},
+	rated: {type: String},
 	path: {type: String, required: true},
 	type: {type: String, required: true},
 	genre: [{ type: String },],

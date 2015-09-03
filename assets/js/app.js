@@ -28,10 +28,22 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
       templateUrl: "/assets/html/gallery.html",
       controller: "GalleryCtrl"
     })
-    .state('legal', {
-      url: "/legal",
-      templateUrl: "/assets/html/legal.html",
-      controller: "LegalCtrl"
+    .state('home', {
+      url: "/home",
+      templateUrl: "/assets/html/cast/cast-home.html",
+      controller: "CastHomeCtrl"
+    })
+    .state('home-channel', {
+      templateUrl: "/assets/html/cast/cast-home-channel.html",
+      controller: "CastHomeChannelCtrl"
+    })
+    .state('home-edit', {
+      templateUrl: "/assets/html/cast/cast-home-edit.html",
+      controller: "CastHomeEditCtrl"
+    })
+    .state('home-play', {
+      templateUrl: "/assets/html/cast/cast-home-play.html",
+      controller: "CastHomePlayCtrl"
     })
     .state('phaser-adventure', {
       url: "/phaser-adventure",
@@ -43,15 +55,15 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
       templateUrl: "/assets/html/phaser/phaser-battle.html",
       controller: "PhaserBattleCtrl"
     })
-    .state('home', {
-      url: "/home",
-      templateUrl: "/assets/html/cast/cast-home.html",
-      controller: "CastHomeCtrl"
-    })
     .state('cast', {
       url: "/cast",
       templateUrl: "/assets/html/cast/cast.html",
       controller: "MediaCtrl"
+    })
+    .state('legal', {
+      url: "/legal",
+      templateUrl: "/assets/html/legal.html",
+      controller: "LegalCtrl"
     })
     .state('mpl', {
       url: "/mpl",

@@ -27,6 +27,13 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
     console.log('sender-update!')
   })
   
+  $scope.$on('retry', function () {
+    console.log('retrying: ' + $scope.curMedia['full_path'])
+    if ($scope.curMedia['full_path']) {
+      sender.loadCustomMedia($scope.curMedia['full_path'])
+    }
+  })
+  
   $scope.$on('finish', function () {
     console.log('finished!')
     $scope.scopeMediaSelected = $scope.curMedia.Eps[Math.floor((Math.random() * $scope.curMedia.Eps.length))]
@@ -64,7 +71,7 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
     
   $scope.load = function(){
     $http({
-        url: '/api/v1/cast/get', 
+        url: '/api/v1/cast/get/media', 
         method: "GET",
         headers: {
           'Content-Type': 'json'

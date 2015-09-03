@@ -140,6 +140,9 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 */
 	var timer = null;
 	
+	var thisRetry = 0
+	var maxRetry = 2
+	
 	/**
 	 * Call Cast API initialization
 	 */
@@ -151,6 +154,8 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 * Initialization
 	 */
 	function initializeCastApi() {
+	  console.log('initialize')
+	  thisRetry = 0
 	  var sessionRequest = new chrome.cast.SessionRequest(applicationID);
 	  var apiConfig = new chrome.cast.ApiConfig(sessionRequest,
 	    sessionListener,
@@ -462,6 +467,7 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    return;
 	  }
 	  if (mediaURL) {
+	    currentMediaURL = mediaURL
 	    console.log('loading...' + mediaURL);
 	    var mediaInfo = new chrome.cast.media.MediaInfo(mediaURL);
 	  }
@@ -544,9 +550,18 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 * @param {Object} e A non-null media object
 	 */
 	function onMediaError(e) {
-		console.log(e);
-	  console.log('media error');
-	  appendMessage('media error');
+		console.log(e)
+	  console.log('media error')
+	  //So we need to send back a signal here if the 
+	  if (e.description === "LOAD_FAILED") {
+	    thisRetry += 1
+  	  if (thisRetry === maxRetry){
+  	    thisRetry = 0
+  	    $rootScope.$broadcast('finish')
+  	  } else {
+  	    $rootScope.$broadcast('retry')
+  	  }
+	  }
 	}
 
 	/**
@@ -562,7 +577,8 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    console.log(isAlive)
 	    //document.getElementById('duration').innerHTML = currentMedia.media.duration;
 	    $rootScope.$broadcast('update');
-	    if (!isAlive) {
+	    if (!isAlive && currentMedia.idleReason !== 'INTERRUPTED') {
+	      thisRetry = 0
 	    	$rootScope.$broadcast('finish');
 	    }
 	  }

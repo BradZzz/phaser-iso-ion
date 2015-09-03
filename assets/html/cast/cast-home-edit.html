@@ -1,0 +1,129 @@
+<style>
+  .cast-play {
+    margin-top: 10em;
+  }
+  .unselected {
+    background-color : rgb(255,255,255) !important; 
+  }
+  md-card {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+  }
+  md-content {
+    margin: 1em;
+  }
+  md-button {
+    background-color : rgba(51, 204, 51, 1);
+  }
+  md-button:hover {
+    background-color: rgba(0, 153, 51, 1);
+  }
+
+</style>
+<div class="fit section-gallery" layout-align="center center" layout-fill>
+  <md-content flex class="md-padding fit" layout-fill layout-padding layout-margin>
+    <section layout="row" flex layout-align="start center">
+      <md-button class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()">
+        <md-tooltip>
+          Close
+        </md-tooltip>
+      </md-button>
+    </section>
+    <section layout="row" flex layout-align="center center">
+      <label class="md-display-1">{{ title }}</label>
+    </section>
+    <section layout="row" flex layout-align="center center">
+      <md-card flex class="md-padding" layout="row">
+	      <div flex="10">
+	        {{ selectedChannel.position }}
+	      </div>
+	      <div flex>
+	        {{ selectedChannel.name }}
+	      </div>
+      </md-card>
+    </section>
+    <section layout="row" flex layout-align="center center">
+      <md-card flex class="md-padding" layout="column">
+        <section layout="row" flex layout-align="center center">
+          <div layout="row" flex>
+	          <md-button class="md-raised md-primary" ng-model="mType" btn-radio="'general'">
+			        General
+			        <md-tooltip>
+			          By Genre/Rating/Rated
+			        </md-tooltip>
+			      </md-button>
+			      <md-button class="md-raised md-primary" ng-model="mType" btn-radio="'specific'">
+			        Specific
+			        <md-tooltip>
+			          By Specific Tv/Movie
+			        </md-tooltip>
+			      </md-button>
+          </div>
+        </section>
+        <md-list ng-if="mType === 'general'">
+          <md-subheader class="md-no-sticky">Filters</md-subheader>
+          <div layout="row" flex>
+            <div flex="10" layout layout-align="center center">
+              <span class="md-body-1">Rated</span>
+            </div>
+            <md-button ng-click="selectRated(rating)" ng-class="selectRatedClass(rating)" flex class="md-raised" ng-repeat="rating in ratingsList">
+              {{ rating }}
+              <md-tooltip>
+                By {{ rating }} & below
+              </md-tooltip>
+            </md-button>
+          </div>
+          <div layout flex>
+	          <div flex="10" layout layout-align="center center">
+			        <span class="md-body-1">imdbR</span>
+			      </div>
+	          <md-slider ng-mouseup="selectRating(mRating)" flex class="md-warn" md-discrete ng-model="mRating" step="1" min="1" max="10"></md-slider>
+          </div>
+          <div flex>
+			      <fieldset class="standard" flex>
+			        <legend>Choose Genre</legend>
+			        <div layout="row" layout-wrap>
+			          <div flex="50" ng-repeat="genre in genres">
+			            <md-checkbox>
+			              {{ genre }}
+			            </md-checkbox>
+			          </div>
+			        </div>
+			      </fieldset>
+			    </div>
+          <!-- <md-list-item class="md-2-line" ng-repeat="media in selectedChannel.media" ng-click="editChannel(channel)">
+            {{ channel.name }}
+          </md-list-item> -->
+        </md-list>
+      </md-card>
+      <md-card flex class="md-padding" layout="column">
+        <md-list>
+          <md-subheader class="md-no-sticky">Media</md-subheader>
+          <md-list-item class="md-2-line" ng-repeat="media in selectedChannel.media" ng-click="editChannel(channel)" layout="row">
+            <div flex="20">
+              {{ media.mediaId }}
+            </div>
+            <div flex>
+              {{ media.type }}
+            </div>
+          </md-list-item>
+        </md-list>
+      </md-card>
+    </section>
+    <section layout="row" flex layout-align="center center"> 
+      <md-button class="md-raised md-primary" aria-label="Save" ng-click="save()">
+        Save
+        <md-tooltip>
+          Save Channel
+        </md-tooltip>
+      </md-button>
+      <md-button class="md-raised" aria-label="Cancel" ng-click="close()">
+        Cancel
+        <md-tooltip>
+          Cancel Edit
+        </md-tooltip>
+      </md-button>
+    </section>
+  </md-content>
+</div>
