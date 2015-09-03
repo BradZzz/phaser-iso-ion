@@ -29,18 +29,12 @@ angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope,
          $rootScope.channels.push({
            name: "Test Channel",
            position: 1,
-           media: [{
-             mediaId: 'tt0084315',
-             type: 'specific'
-           }]
+           media: []
          })
          $rootScope.channels.push({
            name: "Test Channel alt",
            position: 2,
-           media: [{
-             mediaId: 'tt0084315',
-             type: 'specific'
-           }]
+           media: []
          })
        })
     })

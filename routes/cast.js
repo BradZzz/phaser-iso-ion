@@ -32,6 +32,27 @@ module.exports = function (app) {
     })
   })
   
+  app.post('/api/v1/cast/post/channel', function (req, res) {
+    if ('media' in req.query) {
+      req.query.media = JSON.parse(req.query.media)
+      if (!(req.query.media instanceof Array)) {
+        req.query.media = [req.query.media]
+      }
+    }
+    if (req.query) {
+      Channel.findOneAndUpdate({ 'name': req.query.name }, req.query, {upsert:true}, function(err){
+        if (err) {
+          console.log(err)
+          return res.status(500).json({ debug: err })
+        } else {
+          return res.status(200).json()
+        }
+      })
+    } else {
+      return res.status(500).json({ debug: 'no channel' })
+    }
+  })
+  
   app.get('/api/v1/cast/update', function (req, res) {
 	  loop_folder('tv2/').then(function(results){
 			var promises = []

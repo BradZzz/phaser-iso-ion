@@ -6,8 +6,6 @@ var channelSchema = new mongoose.Schema({
 	media: [
     {
       type: mongoose.Schema.Types.Mixed,
-      mediaId: String, /* Usually the imdb id for specific*/
-      type: String /* general or specific. More later. Maybe youtube or something */
     }
   ],
 	created: { type: Date, default: Date.now },
