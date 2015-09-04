@@ -2,19 +2,20 @@ angular.module('blast').controller('CastHomeChannelCtrl', function ($scope, $roo
 {
   $scope.title = "Channels"
   $scope.channels = $rootScope.channels
-  $scope.play = function(){
-    console.log($state)
-    $state.go('home-play')
+  $scope.add = function(){
+    $rootScope.selectedChannel = {
+      name: "",
+      position: 1,
+      specific: [],
+      general: [] 
+    }
+    $state.go('home-edit')
   }
   $scope.close = function(){
     $state.go('home')
   }
   $scope.editChannel = function(channel){
-    console.log('edit!')
-    console.log(channel)
-    $scope.safeApply(function () {
-      $rootScope.selectedChannel = channel
-    })
+    $rootScope.selectedChannel = channel
     $state.go('home-edit')
   }
 })

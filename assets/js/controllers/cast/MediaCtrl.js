@@ -20,6 +20,11 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
   $scope.curMedia = {}
   $scope.television = true
   $scope.scopeMediaSelected = ""
+  $scope.pathReplace = {
+      'tv' : 'tv2/',
+      'movies' : 'movies2/',
+  }
+    
   $window.$scope = $scope
   var popup = 'popup'
   
@@ -88,7 +93,7 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
            Genre : value.genre ? value.genre : "" ,
            Summary : value.plot ? value.plot : "" ,
            Poster : value.poster ? value.poster : "" ,
-           s3_mid : value.type === 'tv' ? value.path : "",
+           s3_mid : value.path,
            Eps : value.episodes ? value.episodes : [],
            isTelevision : value.type === 'tv',
          }
@@ -151,15 +156,15 @@ angular.module('blast').controller('MediaCtrl', function ($scope, $http, $window
     console.log('play')
     console.log(ep)
     console.log($scope.scopeMediaSelected)
-    if ($scope.scopeMediaSelected === ep || !(ep.indexOf("tv2/") > -1)) {
+    if ($scope.scopeMediaSelected === ep || !(ep.indexOf($scope.pathReplace['tv']) > -1)) {
       $scope.scopeMediaSelected = ""
       var prefix = "http://d1xdkehzbn1ea2.cloudfront.net/"
       var suffix = "index.mp4"
       console.log(prefix + ep + suffix)
       $scope.curMedia['full_path'] = prefix + ep + suffix
       sender.loadCustomMedia( prefix + ep + suffix )
-      var epLabel = ep.replace("tv2/","").replace("movies2/","").slice(0, - 1).replace("/"," (").replace(/_/g, ' ')
-      if(ep.indexOf("tv2/") > -1){
+      var epLabel = ep.replace($scope.pathReplace['tv'],"").replace($scope.pathReplace['movies'],"").slice(0, - 1).replace("/"," (").replace(/_/g, ' ')
+      if(ep.indexOf($scope.pathReplace['tv']) > -1){
         epLabel += ')'
       }
       $('.current-media').text(epLabel)

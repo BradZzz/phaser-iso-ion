@@ -25,17 +25,7 @@ angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope,
        console.log('Returned')
        console.log(data)
        $scope.safeApply(function () {
-         $rootScope.channels = []
-         $rootScope.channels.push({
-           name: "Test Channel",
-           position: 1,
-           media: []
-         })
-         $rootScope.channels.push({
-           name: "Test Channel alt",
-           position: 2,
-           media: []
-         })
+         $rootScope.channels = data
        })
     })
     $http({

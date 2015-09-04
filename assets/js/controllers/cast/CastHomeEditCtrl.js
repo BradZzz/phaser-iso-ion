@@ -36,6 +36,7 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
   //This is a copy of all the available media meta
   $scope.media = $rootScope.media
   console.log($scope.media)
+
   for (var index in $scope.media) {
     for (var gIndex in $scope.media[index].genre) {
       if (!($scope.media[index].genre[gIndex] in $scope.config.genreList)) {
@@ -72,11 +73,30 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
     else list.push(item)
     console.log(list)
   }
+  
+  $scope.createSpecific = function (media){
+    console.log(media)
+    console.log($scope.selectedChannel)
+    $scope.selectedChannel.specific.push({
+      name : JSON.parse(JSON.stringify(media.name)),
+      poster : JSON.parse(JSON.stringify(media.poster)),
+      rated : JSON.parse(JSON.stringify(media.rated)),
+      rating : JSON.parse(JSON.stringify(media.imdbRating)),
+      genre : JSON.parse(JSON.stringify(media.genre)),
+      mId : JSON.parse(JSON.stringify(media.imdbId)),
+      type : JSON.parse(JSON.stringify($scope.params.mType))
+    })
+    console.log($scope.selectedChannel)
+  }
+  
   $scope.createTag = function () {
-    $scope.selectedChannel.media.push({
+    $scope.selectedChannel.general.push({
+      name : "",
+      poster : "",
       rated : JSON.parse(JSON.stringify($scope.params.mRated)),
       rating : JSON.parse(JSON.stringify($scope.params.mRating)),
       genre : $scope.params.genre.slice(),
+      mId : "",
       type : JSON.parse(JSON.stringify($scope.params.mType)),
     })
   }
@@ -84,6 +104,7 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
     if ('$$hashKey' in $scope.selectedChannel) {
       delete $scope.selectedChannel['$$hashKey']
     }
+    console.log($scope.selectedChannel)
     $http({
           url: '/api/v1/cast/post/channel',
           method: "POST",

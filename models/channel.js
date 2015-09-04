@@ -3,7 +3,12 @@ var mongoose = require('mongoose')
 var channelSchema = new mongoose.Schema({
 	name: { type: String, required: true, index: true },
 	position: { type: Number },
-	media: [
+	general: [
+     {
+       type: mongoose.Schema.Types.Mixed,
+     }
+  ],
+	specific: [
     {
       type: mongoose.Schema.Types.Mixed,
     }

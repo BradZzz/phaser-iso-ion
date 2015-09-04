@@ -32,13 +32,26 @@ module.exports = function (app) {
     })
   })
   
-  app.post('/api/v1/cast/post/channel', function (req, res) {
-    if ('media' in req.query) {
-      req.query.media = JSON.parse(req.query.media)
-      if (!(req.query.media instanceof Array)) {
-        req.query.media = [req.query.media]
+  function turnArray(mArray, keyword){
+    if (keyword in mArray) {
+      mArray[keyword] = JSON.parse(mArray[keyword])
+      if (!(mArray[keyword] instanceof Array)) {
+        mArray[keyword] = [mArray[keyword]]
       }
     }
+    return mArray
+  }
+  
+  app.post('/api/v1/cast/post/channel', function (req, res) {
+    
+    console.log(req.query)
+    req.query = turnArray(req.query, 'specific')
+    req.query = turnArray(req.query, 'general')
+    if ('_id' in req.query) {
+      delete req.query._id
+    }
+    console.log(req.query)
+
     if (req.query) {
       Channel.findOneAndUpdate({ 'name': req.query.name }, req.query, {upsert:true}, function(err){
         if (err) {
