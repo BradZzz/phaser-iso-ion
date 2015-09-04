@@ -34,7 +34,13 @@ module.exports = function (app) {
   
   function turnArray(mArray, keyword){
     if (keyword in mArray) {
-      mArray[keyword] = JSON.parse(mArray[keyword])
+      //console.log(mArray[keyword])
+      //mArray[keyword] = JSON.parse(*/mArray[keyword]//)
+      for (var media in mArray[keyword]) {
+        console.log(media)
+        console.log(mArray[keyword][media])
+        mArray[keyword][media] = JSON.parse(mArray[keyword][media])
+      }
       if (!(mArray[keyword] instanceof Array)) {
         mArray[keyword] = [mArray[keyword]]
       }
@@ -45,12 +51,13 @@ module.exports = function (app) {
   app.post('/api/v1/cast/post/channel', function (req, res) {
     
     console.log(req.query)
+    //req.query = JSON.parse(req.query)
     req.query = turnArray(req.query, 'specific')
     req.query = turnArray(req.query, 'general')
+    
     if ('_id' in req.query) {
       delete req.query._id
     }
-    console.log(req.query)
 
     if (req.query) {
       Channel.findOneAndUpdate({ 'name': req.query.name }, req.query, {upsert:true}, function(err){

@@ -104,16 +104,18 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
     if ('$$hashKey' in $scope.selectedChannel) {
       delete $scope.selectedChannel['$$hashKey']
     }
-    console.log($scope.selectedChannel)
     $http({
           url: '/api/v1/cast/post/channel',
           method: "POST",
           params: $scope.selectedChannel,
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            'Content-Type': 'application/json'
           }
         }).then(function(res) {
       if (res.status === 200) {
+        if (!_.findWhere($rootScope.channels, {name: $scope.selectedChannel.name})){
+          $rootScope.channels.push($scope.selectedChannel)
+        }
         $state.go('home-channel')
       } else {
         flash.error = "Error saving channel"

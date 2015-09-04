@@ -20,10 +20,10 @@
 </style>
 <div class="fit section-gallery" layout-align="center center" layout-fill>
   <md-content flex class="md-padding fit" layout-fill layout-padding layout-margin>
-    <section layout="row" flex layout-align="end center">
-      <md-button class="ion-edit md-raised md-cornered" aria-label="Edit" ng-click="edit()">
+    <section layout="row" flex layout-align="start center">
+      <md-button class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()">
         <md-tooltip>
-          Edit
+          Close
         </md-tooltip>
       </md-button>
     </section>
@@ -31,11 +31,9 @@
       <label class="md-display-4">{{ title }}</label>
     </section>
     <section layout="row" flex layout-align="center end"> 
-      <md-button class="ion-arrow-right-b cast-play md-fab md-raised" aria-label="Play" ng-click="play()">
-        <md-tooltip>
-          Play
-        </md-tooltip>
-      </md-button>
+      <md-button class="cast-play md-fab md-raised ion-skip-backward" ng-click="skipBack()"></md-button>
+      <md-button class="cast-play md-fab md-raised" ng-click="params.paused = !params.paused" ng-class="playClass()"></md-button>
+      <md-button class="cast-play md-fab md-raised ion-skip-forward" ng-click="skipForward()"></md-button>
     </section>
   </md-content>
 </div>
