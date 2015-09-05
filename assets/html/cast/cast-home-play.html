@@ -21,19 +21,28 @@
 <div class="fit section-gallery" layout-align="center center" layout-fill>
   <md-content flex class="md-padding fit" layout-fill layout-padding layout-margin>
     <section layout="row" flex layout-align="start center">
-      <md-button class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()">
-        <md-tooltip>
-          Close
-        </md-tooltip>
-      </md-button>
+      <md-button layout-align="start center" class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()"></md-button>
+      <md-button layout-align="end center" class="md-raised md-cornered" ng-class="castClass()" ng-click="controls.toggleCast()"></md-button>
     </section>
     <section layout="row" flex layout-align="center center">
       <label class="md-display-4">{{ title }}</label>
     </section>
+    <section layout="row" flex layout-align="center center">
+      <div layout="column" flex>
+      </div>
+      <div layout="column" flex="10" layout-align="center center">
+        <md-button layout-align="start center" class="ion-arrow-up-b md-raised md-cornered" ng-click="controls.chanUp()"></md-button>
+        <md-button layout-align="start center" class="ion-arrow-down-b md-raised md-cornered" ng-click="controls.chanDown()"></md-button>
+      </div>
+    </section>
     <section layout="row" flex layout-align="center end"> 
-      <md-button class="cast-play md-fab md-raised ion-skip-backward" ng-click="skipBack()"></md-button>
+      <md-button class="cast-play md-fab md-raised ion-skip-backward" ng-click="controls.skipBack()"></md-button>
       <md-button class="cast-play md-fab md-raised" ng-click="params.paused = !params.paused" ng-class="playClass()"></md-button>
-      <md-button class="cast-play md-fab md-raised ion-skip-forward" ng-click="skipForward()"></md-button>
+      <md-button class="cast-play md-fab md-raised ion-skip-forward" ng-click="controls.skipForward()"></md-button>
+    </section>
+    <section layout="column" flex>
+      <md-slider id="progress" flex min="0" max="100" ng-model="params.progress" ng-mouseup="controls.seekMedia()"></md-slider>
+      <md-slider flex min="0" max="100" ng-model="params.volume" ng-mouseup="controls.setReceiverVolume()"></md-slider>
     </section>
   </md-content>
 </div>

@@ -143,17 +143,14 @@ angular.module('blast').service('sender', function ($rootScope) {
 	var thisRetry = 0
 	var maxRetry = 2
 	
-	/**
-	 * Call Cast API initialization
-	 */
 	if (!chrome.cast || !chrome.cast.isAvailable) {
-	  setTimeout(initializeCastApi, CAST_API_INITIALIZATION_DELAY);
+	  setTimeout(this.setup, CAST_API_INITIALIZATION_DELAY);
 	}
 	
 	/**
 	 * Initialization
 	 */
-	function initializeCastApi() {
+	this.setup = function() {
 	  console.log('initialize')
 	  thisRetry = 0
 	  var sessionRequest = new chrome.cast.SessionRequest(applicationID);
