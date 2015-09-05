@@ -36,14 +36,19 @@ module.exports = function (app) {
     if (keyword in mArray) {
       //console.log(mArray[keyword])
       //mArray[keyword] = JSON.parse(*/mArray[keyword]//)
-      for (var media in mArray[keyword]) {
-        console.log(media)
-        console.log(mArray[keyword][media])
-        mArray[keyword][media] = JSON.parse(mArray[keyword][media])
-      }
       if (!(mArray[keyword] instanceof Array)) {
-        mArray[keyword] = [mArray[keyword]]
+        console.log(mArray[keyword])
+        mArray[keyword] = [JSON.parse(mArray[keyword])]
+      } else {
+        for (var media in mArray[keyword]) {
+          console.log(media)
+          console.log(mArray[keyword][media])
+          mArray[keyword][media] = JSON.parse(mArray[keyword][media])
+        }
       }
+      //if (!(mArray[keyword] instanceof Array)) {
+      //  mArray[keyword] = [mArray[keyword]]
+      //}
     }
     return mArray
   }

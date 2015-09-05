@@ -1,7 +1,6 @@
 angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $scope, $http, $window, $state, sender)
 {
   sender.setup()
-  $scope.title = "Play"
   $scope.channels = $rootScope.channels
   $scope.mediaMap = {}
   
@@ -10,16 +9,15 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       prefix : "http://d1xdkehzbn1ea2.cloudfront.net/",
       suffix : "index.mp4"
   }
-    
   $scope.params = {
       position : 0,
+      cName : $scope.channels[0].name,
       ep : "",
       paused : true,
       casting : false,
       progress : 0,
       volume : 0.5,
   }
-  
   $scope.controls = {
     playMedia : function(){sender.playMedia()},
     stopMedia : function(){sender.stopMedia()},
@@ -41,6 +39,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         $scope.params.position = 0
       }
       $scope.controls.loadMedia()
+      $scope.controls.updateParams()
       console.log($scope)
     },
     chanDown : function(){
@@ -49,6 +48,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         $scope.params.position = $scope.channels.length - 1
       }
       $scope.controls.loadMedia()
+      $scope.controls.updateParams()
       console.log($scope)
     },
     toggleCast : function(){
@@ -61,6 +61,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     },
     loadMedia : function(){
       sender.loadCustomMedia( $scope.sParams.prefix + $scope.controls.pickEp() + $scope.sParams.suffix )
+    },
+    updateParams : function(){
+      $scope.params.cName = $scope.channels[$scope.params.position].name
     },
     pickEp : function(){
       /* pick media */
@@ -136,4 +139,5 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   }
   
   $scope.formatMedia()
+  $scope.controls.updateParams()
 })
