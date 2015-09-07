@@ -12,14 +12,28 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   $scope.params = {
       position : 0,
       cName : $scope.channels[0].name,
+      media : {},
       ep : "",
       paused : true,
       casting : false,
       progress : 0,
       volume : 0.5,
+      mediaView: true,
   }
   $scope.controls = {
-    playMedia : function(){sender.playMedia()},
+    init : function() {
+      $scope.formatMedia()
+      this.updateParams()
+      this.loadMedia()
+    },
+    playMedia : function(){
+      if ($scope.params.paused) {
+        sender.playMedia()
+      } else {
+        sender.stopMedia()
+      }
+      $scope.params.paused = !$scope.params.paused
+    },
     stopMedia : function(){sender.stopMedia()},
     seekMedia : function(){sender.seekMedia($scope.params.progress)},
     skipMedia : function()
@@ -73,26 +87,38 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       var media = $scope.mediaMap[specific[Math.floor((Math.random() * specific.length))].mId]
       console.log('media')
       console.log(media)
+      $scope.params.media = media
       $scope.params.ep = media.path
       /* pick episode if tv picked */
       console.log('Path: ' + $scope.params.ep)
-      if (media.episodes.length > 0) {
+      if (media.type === 'tv') {
         $scope.params.ep = media.episodes[Math.floor((Math.random() * media.episodes.length))]
       }
       return $scope.params.ep
+    },
+    mediaMeta : function(){
+      return _.map($scope.channels[$scope.params.position].specific, function(media){ return $scope.mediaMap[media.mId] });
     }
   }
   
   $scope.formatMedia = function(){
+    console.log('rootscope')
+    console.log($rootScope.media)
     for (var media in $rootScope.media) {
       var title = $rootScope.media[media]
       if ('imdbId' in title) {
         $scope.mediaMap[title.imdbId] = {
+            name : title.name,
             path : title.path,
+            type : title.type,
             episodes : title.episodes,
             poster : title.poster,
             plot : title.plot,
             genre : title.genre,
+            rated : title.rated,
+            rating : title.imdbRating,
+            year : title.year,
+            runtime : title.runtime
         }
       }
     }
@@ -112,10 +138,13 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   })
   
   /*toggle & select*/
-  $scope.toggleItem = function (item, scopeVar) {
+  $scope.toggleItem = function (scopeVar) {
     $scope.safeApply(function () {
       $scope.params[scopeVar] = !$scope.params[scopeVar]
     })
+    console.log(scopeVar)
+    console.log($scope.params[scopeVar])
+    console.log($scope.params.mediaView)
   }
   $scope.selectItem = function (item, scopeVar) {
     $scope.safeApply(function () {
@@ -137,7 +166,5 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   $scope.close = function(){
     $state.go('home')
   }
-  
-  $scope.formatMedia()
-  $scope.controls.updateParams()
+  $scope.controls.init()
 })

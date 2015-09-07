@@ -161,6 +161,7 @@ module.exports = function (app) {
     var deferred = Q.defer();
       
     s3.listObjects({ Bucket: 'mytv.media.out.video', MaxKeys: 100000, Prefix: prefix, Delimiter: delimiter }, function(err, data) {
+      console.log(data)
       var folders = []
       if (err) {
         console.error(err, err.stack)
