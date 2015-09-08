@@ -45,6 +45,12 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
       }
     }
   }
+  $scope.filterMedia = function(){
+    return function( item ) {
+      console.log(item)
+      return item.type === $scope.params.sType && !_.findWhere($scope.selectedChannel.specific, {'mId':item.imdbId})
+    };
+  }
   $scope.config.genreList['All'] = 'All'
   $scope.play = function(){
     $state.go('home-play')
@@ -103,6 +109,7 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
   $scope.save = function(){
     if ('$$hashKey' in $scope.selectedChannel) {
       delete $scope.selectedChannel['$$hashKey']
+      //Everything besides the imdbid key needs to be deleted here
     }
     $http({
           url: '/api/v1/cast/post/channel',

@@ -34,9 +34,10 @@
 	    <md-card flex class="md-padding">
 		    <md-list>
 		      <md-subheader class="md-no-sticky">Channels</md-subheader>
-		      <md-list-item class="md-2-line" ng-repeat="channel in channels" ng-click="editChannel(channel)">
-		        {{ channel.name }}
-		      </md-list-item>
+		      <md-list-item ng-repeat="channel in channels" ng-click="editChannel(channel)">
+				    <p>{{channel.name}}</p>
+				    <section class="md-secondary ion-close md-raised md-cornered" ng-click="deleteChannel(channel)"></section>
+				  </md-list-item>
 		    </md-list>
 	    </md-card>
     </section>

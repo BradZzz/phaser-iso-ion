@@ -3,6 +3,8 @@ var Channel  = require('../models/channel')
 var Q = require('q')
 var _ = require('underscore')
 var omdbApi = require('omdb-client')
+var mongoose = require('mongoose')
+var ObjectId = mongoose.Types.ObjectId
 var return_count = 0
 
 String.prototype.capitalize = function() {
@@ -34,38 +36,43 @@ module.exports = function (app) {
   
   function turnArray(mArray, keyword){
     if (keyword in mArray) {
-      //console.log(mArray[keyword])
-      //mArray[keyword] = JSON.parse(*/mArray[keyword]//)
       if (!(mArray[keyword] instanceof Array)) {
-        console.log(mArray[keyword])
         mArray[keyword] = [JSON.parse(mArray[keyword])]
       } else {
         for (var media in mArray[keyword]) {
-          console.log(media)
-          console.log(mArray[keyword][media])
           mArray[keyword][media] = JSON.parse(mArray[keyword][media])
         }
       }
-      //if (!(mArray[keyword] instanceof Array)) {
-      //  mArray[keyword] = [mArray[keyword]]
-      //}
     }
     return mArray
   }
   
-  app.post('/api/v1/cast/post/channel', function (req, res) {
-    
+  app.post('/api/v1/cast/delete/channel', function (req, res){
     console.log(req.query)
-    //req.query = JSON.parse(req.query)
+    if ('_id' in req.query) {
+      Channel.find({ '_id': mongoose.Types.ObjectId(req.query._id) }).remove(function(err){
+        if (err) {
+          console.log(err)
+          return res.status(500).json({ debug: err })
+        } else {
+          console.log('Channel: ' + req.query.name + ' deleted')
+          return res.status(200).json()
+        }
+      })
+    }
+  })
+  
+  app.post('/api/v1/cast/post/channel', function (req, res) {
     req.query = turnArray(req.query, 'specific')
     req.query = turnArray(req.query, 'general')
     
-    if ('_id' in req.query) {
-      delete req.query._id
-    }
-
+    var query = ('_id' in req.query ? { '_id' : mongoose.Types.ObjectId(req.query._id) } : { name : req.query.name })
+    
+    console.log(req.query)
+    console.log(query)
+    
     if (req.query) {
-      Channel.findOneAndUpdate({ 'name': req.query.name }, req.query, {upsert:true}, function(err){
+      Channel.findOneAndUpdate(query, req.query, {upsert:true}, function(err){
         if (err) {
           console.log(err)
           return res.status(500).json({ debug: err })
@@ -139,7 +146,7 @@ module.exports = function (app) {
           media.poster = data.Poster
           media.plot = data.Plot
           media.genre = data.Genre.replace(/\s/g, '').split(",")
-          media.imdbRating = data.imdbRating
+          media.imdbRating = (data.imdbRating === "N/A" ? 0 : data.imdbRating)
           media.imdbId = data.imdbID
           media.year = data.Year
           media.runtime = data.Runtime

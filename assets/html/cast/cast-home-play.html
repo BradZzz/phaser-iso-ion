@@ -4,22 +4,35 @@
   }
   .flex-scroll {
     overflow-y: auto;
-    height: 15em;
+    height: 25em;
+  }
+  .overflow {
+    overflow-y: auto;
+  }
+  .tiny { 
+    height : .5em;
   }
   .small {
     height : 4em;
   }
+  .large { 
+    height : 10em;
+  }
   .display-image {
     display: flex;
-    height: 15em;
+    height: 25em;
+    max-width: 20em;
     width: auto;
+  }
+  .progress {
+    margin-bottom : 1.5em;
   }
   md-card {
     width: 100%;
     height: 100%;
     display: inline-block;
   }
-  md-card md-button {
+  .margin-small {
     margin: 2em;
   }
   md-content {
@@ -39,35 +52,67 @@
       <md-button layout-align="start center" class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()"></md-button>
       <md-button layout-align="end center" class="md-raised md-cornered" ng-class="castClass()" ng-click="controls.toggleCast()"></md-button>
     </section>
-    <section layout="row" flex="75" layout-align="center center">
-      <div layout="column" flex="10"></div> <!-- Blank placeholder -->
+    <section layout="row" offset="5" flex="80" layout-align="center center">
       <div layout="row" flex>
        <md-card flex layout="column">
          <div layout="row" flex>
 		       <label layout-align="center center" class="md-display-3 md-padding" flex>{{ params.cName }}</label>
-		       <md-button layout-align="end center" class="ion-forward md-raised md-cornered" ng-click="toggleItem('mediaView')" flex="10"></md-button>
+		       <md-button layout-align="end center" class="ion-forward md-raised md-cornered margin-small" ng-click="toggleItem('mediaView')" flex="10"></md-button>
 	       </div>
 	       <div flex layout="column" ng-if="params.mediaView">
 	         <md-subheader class="md-no-sticky">Now Playing</md-subheader>
 	         <div flex layout="row">
 	           <img class="md-padding display-image" ng-src="{{params.media.poster}}"/>
 	           <div flex layout="column">
-	             <p flex class="md-padding">{{params.media.plot}}</p>
-	             <div flex layout="row">
-	               <p flex class="md-padding">{{params.media.genre}}</p>
-	               <p flex class="md-padding">{{params.media.rated}}</p>
-	               <p flex class="md-padding">{{params.media.rating}}</p>
-	               <p flex class="md-padding">{{params.media.year}}</p>
-	               <p flex class="md-padding">{{params.media.runtime}}</p>
-	               <p flex class="md-padding" ng-if="params.media.type === 'tv'">{{params.ep}}</p>
+	             <md-subheader class="md-no-sticky">Summary</md-subheader>
+	             <p flex class="md-padding tiny">{{params.media.plot}}</p>
+	             <div flex layout="row" layout-wrap class="large">
+	               <div flex layout="column">         
+	                 <md-list flex>
+	                   <md-subheader class="md-no-sticky">Genre</md-subheader>
+					           <div class = "overflow">
+					             <md-list-item flex class="md-1-line" ng-repeat="genre in params.media.genre">
+					               <div class="md-list-item-text">
+					                 <p>{{ genre }}</p>
+					               </div>
+					             </md-list-item>
+					           </div>
+					         </md-list>
+	               </div>
+	               <div flex layout="column">
+                   <md-subheader class="md-no-sticky">Year</md-subheader>
+                   <p flex class="md-padding">{{params.media.year}}</p>
+                 </div>
+                 <div flex layout="column">
+                   <md-subheader class="md-no-sticky">Rated</md-subheader>
+                   <p flex class="md-padding">{{params.media.rated}}</p>
+                 </div>
+                 <div flex layout="column">
+                   <md-subheader class="md-no-sticky">Runtime</md-subheader>
+                   <p flex class="md-padding">{{params.media.runtime}}</p>
+                 </div>
+                 <div flex layout="column">
+                   <md-subheader class="md-no-sticky">Imdb Rating</md-subheader>
+                   <p flex class="md-padding">{{params.media.rating}}</p>
+                 </div>
+                 <div flex layout="column" ng-if="params.media.type === 'tv'">
+                   <md-subheader class="md-no-sticky">Ep</md-subheader>
+                   <p flex class="md-padding">{{params.epNumber()}}</p>
+                 </div>
 	             </div>
+	             <section layout="row" layout-align="center end" class="small"> 
+	               <md-button class="cast-play md-fab md-raised ion-skip-backward" ng-click="controls.prevMedia()"></md-button>
+	               <md-button class="cast-play md-fab md-raised" ng-click="controls.playMedia()" ng-class="playClass()"></md-button>
+	               <md-button class="cast-play md-fab md-raised ion-skip-forward" ng-click="controls.skipMedia()"></md-button>
+	               <md-slider id="progress" class="md-padding md-margin progress" flex min="0" max="100" ng-model="params.progress" ng-mouseup="controls.seekMedia()"></md-slider>
+              </section>
 	           </div>
 	         </div>
 	       </div>
 	       <md-list flex ng-if="!params.mediaView">
            <md-subheader class="md-no-sticky">Media</md-subheader>
            <div class = "flex-scroll">
-             <md-list-item flex class="md-1-line" ng-repeat="item in controls.mediaMeta()">
+             <md-list-item flex class="md-1-line" ng-repeat="item in controls.mediaMeta()" ng-click="controls.loadMedia($index + 1)">
                <img ng-src="{{item.poster}}" class="md-avatar"/>
                <div class="md-list-item-text">
                  <p>{{ item.name }}</p>
@@ -77,21 +122,17 @@
          </md-list>
         </md-card>
       </div>
-      <div layout="column" flex="10" layout-align="center center">
-        <md-button layout-align="start center" class="ion-arrow-up-b md-raised md-cornered" ng-click="controls.chanUp()"></md-button>
-        <md-button layout-align="start center" class="ion-arrow-down-b md-raised md-cornered" ng-click="controls.chanDown()"></md-button>
+      <div layout="row" flex="15" layout-align="center center">
+        <div flex layout="column" layout-padding layout-margin>
+	        <md-card flex layout="column">
+	          <md-subheader class="md-no-sticky">Channel</md-subheader>
+	          <md-button flex layout-align="start center" class="ion-arrow-up-b md-raised md-cornered" ng-click="controls.chanUp()"></md-button>
+            <md-button flex layout-align="start center" class="ion-arrow-down-b md-raised md-cornered" ng-click="controls.chanDown()"></md-button>
+	          <md-subheader class="md-no-sticky">Volume</md-subheader>
+	          <md-slider flex min="0" max="100" ng-model="params.volume" ng-mouseup="controls.setVolume()"></md-slider>
+	        </md-card>
+        </div>
       </div>
-    </section>
-    <section layout="column" flex="10" class="md-padding">
-		  <section layout="row" layout-align="center end" class="small"> 
-		     <md-button class="cast-play md-fab md-raised ion-skip-backward" ng-click="controls.prevMedia()"></md-button>
-		     <md-button class="cast-play md-fab md-raised" ng-click="controls.playMedia()" ng-class="playClass()"></md-button>
-		     <md-button class="cast-play md-fab md-raised ion-skip-forward" ng-click="controls.skipMedia()"></md-button>
-		   </section>
-		  <md-card flex layout="column">
-	      <md-slider id="progress" flex min="0" max="100" ng-model="params.progress" ng-mouseup="controls.seekMedia()"></md-slider>
-	      <md-slider flex min="0" max="100" ng-model="params.volume" ng-mouseup="controls.setReceiverVolume()"></md-slider>
-      </md-card>
     </section>
   </div>
 </div>

@@ -19,6 +19,11 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       progress : 0,
       volume : 0.5,
       mediaView: true,
+      epNumber : function () {
+        var ep = this.ep.slice(0,-1)
+        var rEp = ep.split('/')
+        return rEp[rEp.length-1]
+      }
   }
   $scope.controls = {
     init : function() {
@@ -46,7 +51,11 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       console.log('backward')
       $scope.controls.loadMedia()
     },
-    setVolume : function(){sender.setReceiverVolume(1 - ($scope.params.volume / 100), false)},
+    setVolume : function(){
+      console.log('volume')
+      console.log($scope.params.volume)
+      sender.setReceiverVolume($scope.params.volume / 100, false)
+    },
     chanUp : function(){
       $scope.params.position += 1
       if ($scope.params.position > $scope.channels.length - 1) {
@@ -73,27 +82,34 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         sender.stopApp()
       }
     },
-    loadMedia : function(){
-      sender.loadCustomMedia( $scope.sParams.prefix + $scope.controls.pickEp() + $scope.sParams.suffix )
+    loadMedia : function(picked){
+      sender.loadCustomMedia( $scope.sParams.prefix + $scope.controls.pickEp(picked) + $scope.sParams.suffix )
     },
     updateParams : function(){
       $scope.params.cName = $scope.channels[$scope.params.position].name
     },
-    pickEp : function(){
+    pickEp : function(picked){
+      console.log(picked)
       /* pick media */
       var specific = $scope.channels[$scope.params.position].specific
       console.log('specific')
       console.log(specific)
-      var media = $scope.mediaMap[specific[Math.floor((Math.random() * specific.length))].mId]
+      if (picked) {
+        var media = $scope.mediaMap[specific[picked - 1].mId]
+      } else {
+        var media = $scope.mediaMap[specific[Math.floor((Math.random() * specific.length))].mId]
+      }
       console.log('media')
       console.log(media)
-      $scope.params.media = media
-      $scope.params.ep = media.path
-      /* pick episode if tv picked */
-      console.log('Path: ' + $scope.params.ep)
-      if (media.type === 'tv') {
-        $scope.params.ep = media.episodes[Math.floor((Math.random() * media.episodes.length))]
-      }
+      $scope.safeApply(function () {
+        $scope.params.media = media
+        $scope.params.ep = media.path
+        /* pick episode if tv picked */
+        console.log('Path: ' + $scope.params.ep)
+        if (media.type === 'tv') {
+          $scope.params.ep = media.episodes[Math.floor((Math.random() * media.episodes.length))]
+        }
+      })
       return $scope.params.ep
     },
     mediaMeta : function(){
@@ -108,6 +124,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       var title = $rootScope.media[media]
       if ('imdbId' in title) {
         $scope.mediaMap[title.imdbId] = {
+            id : title.imdbId,
             name : title.name,
             path : title.path,
             type : title.type,
@@ -132,6 +149,13 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     if ($scope.params.ep) {
       sender.loadCustomMedia( $scope.sParams.prefix + $scope.params.ep + $scope.sParams.suffix )
     }
+  })
+  $scope.$on('progress', function (scope, progress) {
+    console.log('progress')
+    console.log(scope)
+    console.log(progress)
+    document.getElementById('progress').value = progress
+    //$scope.controls.loadMedia()
   })
   $scope.$on('finish', function () {
     $scope.controls.loadMedia()

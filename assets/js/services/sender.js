@@ -567,7 +567,8 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 */
 	function onMediaStatusUpdate(isAlive) {
 	  if (progressFlag) {
-	    document.getElementById('progress').value = parseInt(100 * currentMedia.currentTime / currentMedia.media.duration);
+	    //document.getElementById('progress').value = parseInt(100 * currentMedia.currentTime / currentMedia.media.duration);
+	    $rootScope.$broadcast('progress', parseInt(100 * currentMedia.currentTime / currentMedia.media.duration))
 	    //document.getElementById('progress_tick').innerHTML = currentMedia.currentTime;
 	    console.log(session)
 	    console.log(currentMedia)
@@ -876,7 +877,7 @@ angular.module('blast').service('sender', function ($rootScope) {
 	this.seekMedia = function(pos) {
 	  console.log('Seeking ' + currentMedia.sessionId + ':' +
 	    currentMedia.mediaSessionId + ' to ' + pos + '%');
-	  progressFlag = 0;
+	  progressFlag = 1;
 	  var request = new chrome.cast.media.SeekRequest();
 	  request.currentTime = pos * currentMedia.media.duration / 100;
 	  request.resumeState = chrome.cast.media.PlayerState.PAUSED;
@@ -924,16 +925,18 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  }
 	  
 	  if (currentMedia.media) {
-	    var cTime = currentMedia.getEstimatedTime();
-	    document.getElementById('progress').value = parseInt(100 * cTime / currentMedia.media.duration);
+	    console.log('media')
+	    var cTime = currentMedia.getEstimatedTime()
+	    $rootScope.$broadcast('progress', parseInt(100 * cTime / currentMedia.media.duration))
 	    //document.getElementById('progress_tick').innerHTML = cTime;
 	  }
 	  else {
-	    document.getElementById('progress').value = 0;
+	    console.log('no media')
+	    $rootScope.$broadcast('progress', 0)
 	    //document.getElementById('progress_tick').innerHTML = 0;
-	    if (timer) {
-	      clearInterval(timer);
-	    }
+	    //if (timer) {
+	    //  clearInterval(timer);
+	    //}
 	  }
 	}
 
