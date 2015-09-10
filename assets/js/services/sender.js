@@ -585,7 +585,7 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 * play media
 	 * @this playMedia
 	 */
-	this.playMedia = function() {
+	this.playMedia = function(pause) {
 	  if (!currentMedia) {
 	    return;
 	  }
@@ -594,67 +594,41 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    clearInterval(timer);
 	  }
 
-	  var playpauseresume = document.getElementById('playpauseresume');
-	  if (playpauseresume.innerHTML == 'Play Media') {
-	    currentMedia.play(null,
-	      mediaCommandSuccessCallback.bind(this, 'playing started for ' +
-	          currentMedia.sessionId),
-	      onError);
-	      playpauseresume.innerHTML = 'Pause Media';
-	      currentMedia.addUpdateListener(onMediaStatusUpdate);
-	      appendMessage('play started');
-	      timer = setInterval(updateCurrentTime, PROGRESS_BAR_UPDATE_DELAY);
+    if (!pause) {
+      currentMedia.pause(null,
+        mediaCommandSuccessCallback.bind(this, 'paused ' +
+            currentMedia.sessionId), onError);
+      //playpauseresume.innerHTML = 'Resume Media';
+      appendMessage('paused');
 
-	    code = '  currentMedia.play(null, success, error);\n';
-	    showCodeSnippet(code, 'sender');
+      code = '  currentMedia.pause(null, success, error);\n';
+      showCodeSnippet(code, 'sender');
 
-	    code = '  // save original and override onPlay\n' +
-	         '  mediaManager.onPlay = function(event) {\n' +
-	         '    // your custom code\n' +
-	         '    mediaManager[\'onPlayOrig\'](event);\n' +
-	         '  }\n';
-	    showCodeSnippet(code, 'receiver');
-	  }
-	  else {
-	    if (playpauseresume.innerHTML == 'Pause Media') {
-	      currentMedia.pause(null,
-	        mediaCommandSuccessCallback.bind(this, 'paused ' +
-	            currentMedia.sessionId), onError);
-	      playpauseresume.innerHTML = 'Resume Media';
-	      appendMessage('paused');
+      code = '  // save original and override onPause\n' +
+           '  mediaManager.onPause = function(event) {\n' +
+           '    // your custom code\n' +
+           '    mediaManager[\'onPauseOrig\'](event);\n' +
+           '  }\n' +
+           '  // Watch \'Media Element State\'';
+      showCodeSnippet(code, 'receiver');
+    } else {
+      currentMedia.play(null,
+        mediaCommandSuccessCallback.bind(this, 'resumed ' +
+            currentMedia.sessionId), onError);
+      //playpauseresume.innerHTML = 'Pause Media';
+      appendMessage('resumed');
+      timer = setInterval(updateCurrentTime, PROGRESS_BAR_UPDATE_DELAY);
 
-	      code = '  currentMedia.pause(null, success, error);\n';
-	      showCodeSnippet(code, 'sender');
+      code = '  currentMedia.play(null, success, error);\n';
+      showCodeSnippet(code, 'sender');
 
-	      code = '  // save original and override onPause\n' +
-	           '  mediaManager.onPause = function(event) {\n' +
-	           '    // your custom code\n' +
-	           '    mediaManager[\'onPauseOrig\'](event);\n' +
-	           '  }\n' +
-	           '  // Watch \'Media Element State\'';
-	      showCodeSnippet(code, 'receiver');
-	    }
-	    else {
-	      if (playpauseresume.innerHTML == 'Resume Media') {
-	        currentMedia.play(null,
-	          mediaCommandSuccessCallback.bind(this, 'resumed ' +
-	              currentMedia.sessionId), onError);
-	        playpauseresume.innerHTML = 'Pause Media';
-	        appendMessage('resumed');
-	        timer = setInterval(updateCurrentTime, PROGRESS_BAR_UPDATE_DELAY);
-	      }
-
-	      code = '  currentMedia.play(null, success, error);\n';
-	      showCodeSnippet(code, 'sender');
-
-	      code = '  // save original and override onPlay\n' +
-	           '  mediaManager.onPlay = function(event) {\n' +
-	           '    // your custom code\n' +
-	           '    mediaManager[\'onPlayOrig\'](event);\n' +
-	           '  }\n';
-	      showCodeSnippet(code, 'receiver');
-	    }
-	  }
+      code = '  // save original and override onPlay\n' +
+           '  mediaManager.onPlay = function(event) {\n' +
+           '    // your custom code\n' +
+           '    mediaManager[\'onPlayOrig\'](event);\n' +
+           '  }\n';
+      showCodeSnippet(code, 'receiver');
+    }
 	}
 
 	/**

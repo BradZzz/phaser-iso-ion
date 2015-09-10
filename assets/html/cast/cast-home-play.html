@@ -32,9 +32,6 @@
     height: 100%;
     display: inline-block;
   }
-  .margin-small {
-    margin: 2em;
-  }
   md-content {
     margin: 1em;
   }
@@ -48,16 +45,18 @@
 </style>
 <div class="fit section-gallery" layout-align="center center" layout-fill>
   <div layout="column" layout-fill>
-    <section layout="row" flex="10" layout-align="start center">
-      <md-button layout-align="start center" class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()"></md-button>
-      <md-button layout-margin layout-padding layout-align="end center" class="md-raised md-cornered" ng-class="castClass()" ng-click="controls.toggleCast()"></md-button>
-    </section>
+    <div flex offset="10" layout-margin layout-padding>
+    </div>
     <section layout="row" offset="5" flex="80" layout-align="center center">
       <div layout="row" flex>
        <md-card flex layout="column">
          <div layout="row" flex>
 		       <label layout-align="center center" class="md-display-3 md-padding" flex>{{ params.cName }}</label>
-		       <md-button layout-align="end center" class="ion-forward md-raised md-cornered margin-small" ng-click="toggleItem('mediaView')" flex="10"></md-button>
+		       <section layout="row" flex="20" layout-align="end center">
+		         <md-button flex class="ion-forward md-raised md-cornered" ng-click="toggleItem('mediaView')"></md-button>
+             <md-button flex class="md-raised md-cornered" ng-class="castClass()" ng-click="controls.toggleCast()"></md-button>
+             <md-button flex class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()"></md-button>
+			     </section>
 	       </div>
 	       <div flex layout="column" ng-if="params.mediaView">
 	         <md-subheader class="md-no-sticky">Now Playing</md-subheader>

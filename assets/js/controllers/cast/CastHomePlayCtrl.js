@@ -10,6 +10,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       prefix : "http://d1xdkehzbn1ea2.cloudfront.net/",
       suffix : "index.mp4",
       dateFormat : "YYYY-MM-DD HH:mm:ss",
+      tvOdds: .8, //The odds of picking a tv show as opposed to a movie
   }
   $scope.params = {
       position : 0,
@@ -37,13 +38,14 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     playMedia : function(){
       console.log('play toggle')
       if ($scope.params.paused) {
-        sender.playMedia()
+        sender.playMedia(false)
       } else {
-        sender.stopMedia()
+        sender.playMedia(true)
+        //sender.stopMedia()
       }
       $scope.params.paused = !$scope.params.paused
     },
-    stopMedia : function(){sender.stopMedia()},
+    //stopMedia : function(){sender.stopMedia()},
     seekMedia : function(){sender.seekMedia($scope.params.progress)},
     skipMedia : function()
     {
@@ -99,24 +101,33 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       if (picked) {
         var media = $scope.mediaMap[specific[picked - 1].mId]
       } else {
+        var tSelected = []
+        var roll = Math.random()
+        for (var file in specific) {
+          if ($scope.mediaMap[specific[file].mId].type === 'tv' && roll <= $scope.sParams.tvOdds) {
+            tSelected.push(specific[file])
+          } else if ($scope.mediaMap[specific[file].mId].type === 'movie' && roll > $scope.sParams.tvOdds) {
+            tSelected.push(specific[file])
+          }
+        }
+        console.log('picked',tSelected)
         //If the media is not picked, make sure that the media playing before isnt the media playing now
-        var mId = specific[Math.floor((Math.random() * specific.length))].mId
-        while (mId === $scope.params.media.id && specific.length > 1) {
-          mId = specific[Math.floor((Math.random() * specific.length))].mId
+        var mId = tSelected[Math.floor((Math.random() * tSelected.length))].mId
+        while (mId === $scope.params.media.id && tSelected.length > 1) {
+          mId = tSelected[Math.floor((Math.random() * tSelected.length))].mId
         }
         var media = $scope.mediaMap[mId]
       }
-      console.log('media')
-      console.log(media)
       $scope.safeApply(function () {
         $scope.params.media = media
         $scope.params.ep = media.path
         /* pick episode if tv picked */
-        console.log('Path: ' + $scope.params.ep)
         if (media.type === 'tv') {
           $scope.params.ep = media.episodes[Math.floor((Math.random() * media.episodes.length))]
         }
       })
+      console.log('media', media)
+      console.log('path', $scope.params.ep)
       return $scope.params.ep
     },
     mediaMeta : function(){
@@ -251,7 +262,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   /*ng-class*/
   /*play button*/
   $scope.playClass = function(){
-    return $scope.params.paused ? 'ion-arrow-right-b' : 'ion-pause'
+    return $scope.params.paused ? 'ion-pause' : 'ion-arrow-right-b'
   }
   /*cast button*/
   $scope.castClass = function(){

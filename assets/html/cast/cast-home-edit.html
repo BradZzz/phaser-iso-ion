@@ -14,6 +14,9 @@
   .md-contact-avatar img {
     width: 30px;
   }
+  md-card.media-filter {
+    height: 85vh;
+  }
   md-content {
     margin: 1em;
   }
@@ -48,9 +51,9 @@
 	      </md-card>
 	    </section>
 	    <section layout="row" flex layout-align="center center">
-	      <md-card flex class="md-padding" layout="column">
-	        <section layout="row" flex layout-align="center center">
-	          <div layout="row" flex>
+	      <md-card flex class="md-padding media-filter" layout="column">
+	        <section layout="row" layout-align="start center">
+	          <div layout="row">
 	            <md-button ng-click="$parent.params.mType = filter.type" ng-repeat="filter in config.filterList" class="md-raised" ng-class="isSelectedClass(filter.type, params.mType)">
 	              {{ filter.name }} 
 	              <md-tooltip>
@@ -99,10 +102,10 @@
 			      </md-button>
 	        </md-list>
 	        <!-- specific section -->
-	        <section layout="row" flex layout-align="center center" ng-if="params.mType === 'specific'">
+	        <section layout="row" flex layout-align="start center" ng-if="params.mType === 'specific'">
 	          <md-list flex>
 	            <md-subheader class="md-no-sticky">Specific</md-subheader>
-		          <div layout="row" flex>
+		          <div layout="row">
 		            <md-button ng-class="isSelectedClass(specific.type, params.sType)" ng-click="selectItem(specific.type, 'sType')" ng-repeat="specific in config.specificList" class="md-raised">
 		              {{ specific.name }} 
 		              <md-tooltip>
@@ -121,7 +124,7 @@
 		        </md-list>
 			    </section>
 	      </md-card>
-	      <md-card flex class="md-padding" layout="column">
+	      <md-card flex class="md-padding media-filter" layout="column">
 	        <md-subheader class="md-no-sticky">Media</md-subheader>
 	        <md-chips ng-model="selectedChannel.general" readonly="false">
 			      <md-chip-template md-contact-image="{{ $chip.poster }}">

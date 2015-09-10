@@ -46,7 +46,7 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
     }
   }
   $scope.config.genreList.sort()
-  genreList.splice(0, 0, 'All')
+  $scope.config.genreList.splice(0, 0, 'All')
   _.sortBy($scope.selectedChannel.specific, 'name')
   
   $scope.filterMedia = function(){
@@ -96,6 +96,7 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
       type : JSON.parse(JSON.stringify($scope.params.mType))
     })
     console.log($scope.selectedChannel)
+    _.sortBy($scope.selectedChannel.specific, 'name')
   }
   
   $scope.createTag = function () {
