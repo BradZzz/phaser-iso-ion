@@ -21,7 +21,7 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
          name: 'Tv',
          desc: 'Pick Specific Tv Show'}
       ],
-      genreList : {}
+      genreList : []
   }
   
   //Presets and save vars
@@ -39,19 +39,22 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
 
   for (var index in $scope.media) {
     for (var gIndex in $scope.media[index].genre) {
-      if (!($scope.media[index].genre[gIndex] in $scope.config.genreList)) {
+      if ($scope.config.genreList.indexOf($scope.media[index].genre[gIndex]) == -1){
         var genre = $scope.media[index].genre[gIndex]
-        $scope.config.genreList[genre] = genre
+        $scope.config.genreList.push(genre)
       }
     }
   }
+  $scope.config.genreList.sort()
+  genreList.splice(0, 0, 'All')
+  _.sortBy($scope.selectedChannel.specific, 'name')
+  
   $scope.filterMedia = function(){
     return function( item ) {
       console.log(item)
       return item.type === $scope.params.sType && !_.findWhere($scope.selectedChannel.specific, {'mId':item.imdbId})
     };
   }
-  $scope.config.genreList['All'] = 'All'
   $scope.play = function(){
     $state.go('home-play')
   }
@@ -112,13 +115,13 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
       //Everything besides the imdbid key needs to be deleted here
     }
     $http({
-          url: '/api/v1/cast/post/channel',
-          method: "POST",
-          params: $scope.selectedChannel,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }).then(function(res) {
+      url: '/api/v1/cast/post/channel',
+      method: "POST",
+      params: $scope.selectedChannel,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function(res) {
       if (res.status === 200) {
         if (!_.findWhere($rootScope.channels, {name: $scope.selectedChannel.name})){
           $rootScope.channels.push($scope.selectedChannel)

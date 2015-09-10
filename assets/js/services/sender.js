@@ -399,14 +399,13 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 * @this onRequestSessionSuccess
 	 */
 	function onRequestSessionSuccess(e) {
+	  //This is where the callback needs to be to start the player
 	  console.log('session success: ' + e.sessionId);
 	  appendMessage('session success: ' + e.sessionId);
 	  session = e;
 	  session.addMessageListener(MESSAGE_NAMESPACE, onReceiverMessage.bind(this));
+	  $rootScope.$broadcast('init');
 	}
-
-	//Access: AKIAIYDI5CK3XOJXF22Q
-	//Secret: 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
 
 	/**
 	 * callback on launch error
@@ -468,11 +467,11 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    console.log('loading...' + mediaURL);
 	    var mediaInfo = new chrome.cast.media.MediaInfo(mediaURL);
 	  }
-	  else {
+	  /*else {
 	    console.log('loading...' + currentMediaURL);
 	    //appendMessage('loading...' + currentMediaURL);
 	    var mediaInfo = new chrome.cast.media.MediaInfo(currentMediaURL);
-	  }
+	  }*/
 
 	  mediaInfo.contentType = mediaTypes[currentMediaIndex];
 	  var request = new chrome.cast.media.LoadRequest(mediaInfo);
@@ -570,11 +569,9 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    //document.getElementById('progress').value = parseInt(100 * currentMedia.currentTime / currentMedia.media.duration);
 	    $rootScope.$broadcast('progress', parseInt(100 * currentMedia.currentTime / currentMedia.media.duration))
 	    //document.getElementById('progress_tick').innerHTML = currentMedia.currentTime;
-	    console.log(session)
 	    console.log(currentMedia)
-	    console.log(isAlive)
 	    //document.getElementById('duration').innerHTML = currentMedia.media.duration;
-	    $rootScope.$broadcast('update');
+	    $rootScope.$broadcast('update', currentMedia);
 	    if (!isAlive && currentMedia.idleReason !== 'INTERRUPTED') {
 	      thisRetry = 0
 	    	$rootScope.$broadcast('finish');
@@ -869,6 +866,21 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  }
 	}
 
+	this.mediaPosition = function(){
+	  if (currentMedia) {
+	    console.log(currentMedia)
+	    return { 
+	      duration : currentMedia.media.duration,
+	      current : currentMedia.getEstimatedTime(),
+	    }
+	  } else {
+	    return { 
+	      duration : 0,
+	      current : 0,
+	    }
+	  }
+	}
+	
 	/**
 	 * seek media position
 	 * @param {Number} pos A number to indicate percent
@@ -923,6 +935,7 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  if (!session || !currentMedia) {
 	    return;
 	  }
+	  console.log(currentMedia)
 	  
 	  if (currentMedia.media) {
 	    console.log('media')

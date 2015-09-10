@@ -5,9 +5,11 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   $scope.mediaMap = {}
   
   console.log($scope.channels)
+  /* The s is for static */
   $scope.sParams = {
       prefix : "http://d1xdkehzbn1ea2.cloudfront.net/",
-      suffix : "index.mp4"
+      suffix : "index.mp4",
+      dateFormat : "YYYY-MM-DD HH:mm:ss",
   }
   $scope.params = {
       position : 0,
@@ -17,7 +19,8 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       paused : true,
       casting : false,
       progress : 0,
-      volume : 0.5,
+      volume : 100,
+      updateOffset : 0,
       mediaView: true,
       epNumber : function () {
         var ep = this.ep.slice(0,-1)
@@ -28,10 +31,11 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   $scope.controls = {
     init : function() {
       $scope.formatMedia()
+      this.calculateOffset()
       this.updateParams()
-      this.loadMedia()
     },
     playMedia : function(){
+      console.log('play toggle')
       if ($scope.params.paused) {
         sender.playMedia()
       } else {
@@ -44,35 +48,33 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     skipMedia : function()
     {
       console.log('forward')
-      $scope.controls.loadMedia()
+      this.loadMedia()
     },
     prevMedia : function()
     {
       console.log('backward')
-      $scope.controls.loadMedia()
+      this.loadMedia()
     },
     setVolume : function(){
-      console.log('volume')
-      console.log($scope.params.volume)
       sender.setReceiverVolume($scope.params.volume / 100, false)
     },
     chanUp : function(){
+      this.saveChannelOffset()
       $scope.params.position += 1
       if ($scope.params.position > $scope.channels.length - 1) {
         $scope.params.position = 0
       }
-      $scope.controls.loadMedia()
-      $scope.controls.updateParams()
-      console.log($scope)
+      this.calculateOffset()
+      this.updateParams()
     },
     chanDown : function(){
+      this.saveChannelOffset()
       $scope.params.position -= 1
       if ($scope.params.position < 0) {
         $scope.params.position = $scope.channels.length - 1
       }
-      $scope.controls.loadMedia()
-      $scope.controls.updateParams()
-      console.log($scope)
+      this.calculateOffset()
+      this.updateParams()
     },
     toggleCast : function(){
       $scope.params.casting = !$scope.params.casting
@@ -97,7 +99,12 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       if (picked) {
         var media = $scope.mediaMap[specific[picked - 1].mId]
       } else {
-        var media = $scope.mediaMap[specific[Math.floor((Math.random() * specific.length))].mId]
+        //If the media is not picked, make sure that the media playing before isnt the media playing now
+        var mId = specific[Math.floor((Math.random() * specific.length))].mId
+        while (mId === $scope.params.media.id && specific.length > 1) {
+          mId = specific[Math.floor((Math.random() * specific.length))].mId
+        }
+        var media = $scope.mediaMap[mId]
       }
       console.log('media')
       console.log(media)
@@ -114,6 +121,61 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     },
     mediaMeta : function(){
       return _.map($scope.channels[$scope.params.position].specific, function(media){ return $scope.mediaMap[media.mId] });
+    },
+    calculateOffset: function(){
+      var channelTmp = $scope.channels[$scope.params.position]
+      var ms = moment(channelTmp.lastOffset,$scope.sParams.dateFormat).diff(moment(moment().format($scope.sParams.dateFormat),$scope.sParams.dateFormat))
+      var dWait = moment.duration(Math.abs(ms)).seconds()
+     
+      console.log(channelTmp.lastMediaCurrent)
+      console.log(channelTmp.lastMediaDuration)
+      console.log(dWait)
+      //sender.seekMedia($scope.params.progress)
+      
+      if (channelTmp.lastMediaCurrent + dWait > channelTmp.lastMediaDuration) {
+        $scope.params.updateOffset = (channelTmp.lastMediaCurrent + dWait) - channelTmp.lastMediaDuration
+        //Here we want to pick something new
+        this.loadMedia()
+      } else {
+        $scope.params.updateOffset = channelTmp.lastMediaCurrent + dWait
+        //Here we want to use the same episodes and media as before
+        $scope.safeApply(function () {
+          $scope.params.media = media = $scope.mediaMap[$scope.channels[$scope.params.position].lastId]
+          if ($scope.params.media.type === 'tv') {
+            $scope.params.ep = $scope.channels[$scope.params.position].lastEp
+          } else {
+            $scope.params.ep = $scope.params.media.path
+          }
+          console.log($scope.params)
+        })
+        sender.loadCustomMedia( $scope.sParams.prefix + $scope.params.ep + $scope.sParams.suffix )
+      }
+      console.log('offset params')
+      console.log($scope.params)
+    },
+    saveChannelOffset: function(){
+      $scope.channels[$scope.params.position].lastId = $scope.params.media.id
+      $scope.channels[$scope.params.position].lastEp = $scope.params.media.type === 'tv' ?  $scope.params.ep : ""
+      $scope.channels[$scope.params.position].lastMediaCurrent = sender.mediaPosition().current ? sender.mediaPosition().current : 0
+      $scope.channels[$scope.params.position].lastMediaDuration = sender.mediaPosition().duration ? sender.mediaPosition().duration : 0
+      $scope.channels[$scope.params.position].lastOffset = moment().format($scope.sParams.dateFormat)
+      
+      console.log(sender.mediaPosition())
+      
+      $http({
+        url: '/api/v1/cast/post/channel',
+        method: "POST",
+        params: $scope.channels[$scope.params.position],
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function(res) {
+        if (res.status === 200) {
+          console.log('Channel Offset Saved!')
+        } else {
+          console.log('Error Saving Channel Offset')
+        }
+      })
     }
   }
   
@@ -142,8 +204,13 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   }
   
   /*Listeners*/
-  $scope.$on('update', function () {
-    console.log('sender-update!')
+  $scope.$on('update', function (scope, media) {
+    if (media.playerState === "PLAYING" && $scope.params.updateOffset && $scope.params.updateOffset > 0) {
+      var mLength = sender.mediaPosition().duration
+      sender.seekMedia( 100 * (($scope.params.updateOffset % mLength) / mLength))
+      $scope.params.updateOffset = 0
+      $scope.controls.saveChannelOffset()
+    }
   })
   $scope.$on('retry', function () {
     if ($scope.params.ep) {
@@ -151,14 +218,19 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     }
   })
   $scope.$on('progress', function (scope, progress) {
+    //This doesnt work yet
     console.log('progress')
     console.log(scope)
     console.log(progress)
-    document.getElementById('progress').value = progress
+    $scope.controls.saveChannelOffset()
+    //document.getElementById('progress').value = progress
     //$scope.controls.loadMedia()
   })
   $scope.$on('finish', function () {
     $scope.controls.loadMedia()
+  })
+  $scope.$on('init', function () {
+    $scope.controls.init()
   })
   
   /*toggle & select*/
@@ -190,5 +262,4 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   $scope.close = function(){
     $state.go('home')
   }
-  $scope.controls.init()
 })

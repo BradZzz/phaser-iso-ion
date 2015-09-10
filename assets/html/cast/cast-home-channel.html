@@ -2,10 +2,12 @@
   .cast-play {
     margin-top: 10em;
   }
-  md-card {
-    width: 100%;
-    height: 100%;
-    display: inline-block;
+  .channel-list {
+    overflow-y: auto;
+    height: 15em;
+  }
+  md-card.main {
+    height : 97vh;
   }
   md-content {
     margin: 1em;
@@ -19,34 +21,36 @@
 
 </style>
 <div class="fit section-gallery" layout-align="center center" layout-fill>
-  <md-content flex class="md-padding fit" layout-fill layout-padding layout-margin>
-    <section layout="row" flex layout-align="start center">
-      <md-button class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()">
-        <md-tooltip>
-          Close
-        </md-tooltip>
-      </md-button>
-    </section>
-    <section layout="row" flex layout-align="center center">
-      <label class="md-display-1">{{ title }}</label>
-    </section>
-    <section layout="row" flex layout-align="center center">
-	    <md-card flex class="md-padding">
-		    <md-list>
+  <section class="flex">
+    <md-card flex layout-padding layout-margin class="main">
+	    <section layout="row" layout-align="start center">
+	      <md-button class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()">
+	        <md-tooltip>
+	          Close
+	        </md-tooltip>
+	      </md-button>
+	    </section>
+	    <!-- <section layout="row" flex layout-align="center center">
+	      <label class="md-display-1">{{ title }}</label>
+	    </section> -->
+	    <md-card layout="row" flex layout-align="center center">
+		    <section flex class="md-padding">
 		      <md-subheader class="md-no-sticky">Channels</md-subheader>
-		      <md-list-item ng-repeat="channel in channels" ng-click="editChannel(channel)">
-				    <p>{{channel.name}}</p>
-				    <section class="md-secondary ion-close md-raised md-cornered" ng-click="deleteChannel(channel)"></section>
-				  </md-list-item>
-		    </md-list>
+			    <md-list class="channel-list">
+			      <md-list-item ng-repeat="channel in channels" ng-click="editChannel(channel)">
+					    <p>{{channel.name}}</p>
+					    <section class="md-secondary ion-close md-raised md-cornered" ng-click="deleteChannel(channel)"></section>
+					  </md-list-item>
+			    </md-list>
+		    </section>
 	    </md-card>
-    </section>
-    <section layout="row" flex layout-align="end center"> 
-      <md-button class="ion-plus cast-play md-fab md-raised" aria-label="Add" ng-click="add()">
-        <md-tooltip>
-          Add Channel
-        </md-tooltip>
-      </md-button>
-    </section>
-  </md-content>
+	    <section layout="row" flex layout-align="end center"> 
+	      <md-button class="ion-plus cast-play md-fab md-raised" aria-label="Add" ng-click="add()">
+	        <md-tooltip>
+	          Add Channel
+	        </md-tooltip>
+	      </md-button>
+	    </section>
+    </md-card>
+  </section>
 </div>

@@ -48,7 +48,6 @@ module.exports = function (app) {
   }
   
   app.post('/api/v1/cast/delete/channel', function (req, res){
-    console.log(req.query)
     if ('_id' in req.query) {
       Channel.find({ '_id': mongoose.Types.ObjectId(req.query._id) }).remove(function(err){
         if (err) {
@@ -62,14 +61,32 @@ module.exports = function (app) {
     }
   })
   
+  app.post('/api/v1/cast/post/channel/all', function (req, res) {
+    if (req.query) {
+      var promises = []
+      for (var index in req.query) {
+        var channel = JSON.parse(req.query[index])
+        var query = ('_id' in channel ? { '_id' : mongoose.Types.ObjectId(channel._id) } : { name : channel.name })
+        promises.push(Channel.findOneAndUpdate(query, channel, {upsert:true}).exec())
+      }
+      Q.all(promises).then(function(results) {
+        console.log('success!')
+        return res.status(200).json()
+      }, function(err) {
+        console.log('error!')
+        console.log(err)
+        return res.status(500).json({ debug: err })
+      })
+    } else {
+      return res.status(500).json({ debug: 'no channel' })
+    }
+  })
+  
   app.post('/api/v1/cast/post/channel', function (req, res) {
     req.query = turnArray(req.query, 'specific')
     req.query = turnArray(req.query, 'general')
     
     var query = ('_id' in req.query ? { '_id' : mongoose.Types.ObjectId(req.query._id) } : { name : req.query.name })
-    
-    console.log(req.query)
-    console.log(query)
     
     if (req.query) {
       Channel.findOneAndUpdate(query, req.query, {upsert:true}, function(err){
@@ -140,7 +157,7 @@ module.exports = function (app) {
     }
     omdbApi.get(params, function(err, data) {
         if (err) {
-          console.error(err, err.stack)
+          console.log(err)
           deferred.resolve(media)
         } else {
           media.poster = data.Poster
@@ -168,10 +185,9 @@ module.exports = function (app) {
     var deferred = Q.defer();
       
     s3.listObjects({ Bucket: 'mytv.media.out.video', MaxKeys: 100000, Prefix: prefix, Delimiter: delimiter }, function(err, data) {
-      console.log(data)
       var folders = []
       if (err) {
-        console.error(err, err.stack)
+        console.log(err)
         deferred.reject(err)
       }
       for (var prefix in data.CommonPrefixes ) {
@@ -196,7 +212,7 @@ module.exports = function (app) {
 		s3.listObjects({ Bucket: 'mytv.media.out.video', MaxKeys: 100000, Prefix: prefix, Delimiter: '/' }, function(err, data) {
 			var folders = []
 			if (err) {
-				console.error(err, err.stack)
+			  console.log(err)
 				deferred.reject(err)
 			}
 		  if (data.Prefix.indexOf("movie") > -1) {

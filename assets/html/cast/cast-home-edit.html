@@ -4,15 +4,15 @@
   }
   .flex-scroll {
     overflow-y: auto;
+  }
+  .general { 
+    height: 15em;
+  }
+  .specific { 
     height: 20em;
   }
   .md-contact-avatar img {
     width: 30px;
-  }
-  md-card {
-    width: 100%;
-    height: 100%;
-    display: inline-block;
   }
   md-content {
     margin: 1em;
@@ -26,132 +26,136 @@
 
 </style>
 <div class="fit section-gallery" layout-align="center center" layout-fill>
-  <md-content flex class="md-padding fit" layout-fill layout-padding layout-margin>
-    <section layout="row" flex layout-align="start center">
-      <md-button class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()">
-        <md-tooltip>
-          Close
-        </md-tooltip>
-      </md-button>
-    </section>
-    <section layout="row" flex layout-align="center center">
-      <label class="md-display-1">{{ title }}</label>
-    </section>
-    <section layout="row" flex layout-align="center center">
-      <md-card flex class="md-padding" layout="row">
-	      <md-input-container flex>
-          <label>Channel Name</label>
-          <input ng-model="selectedChannel.name">
-        </md-input-container>
-      </md-card>
-    </section>
-    <section layout="row" flex layout-align="center center">
-      <md-card flex class="md-padding" layout="column">
-        <section layout="row" flex layout-align="center center">
-          <div layout="row" flex>
-            <md-button ng-click="$parent.params.mType = filter.type" ng-repeat="filter in config.filterList" class="md-raised" ng-class="isSelectedClass(filter.type, params.mType)">
-              {{ filter.name }} 
-              <md-tooltip>
-                {{ filter.desc }} 
-              </md-tooltip>
-            </md-button>
-          </div>
-        </section>
-        <!-- general section -->
-        <md-list ng-if="params.mType === 'general'">
-          <md-subheader class="md-no-sticky">Filters</md-subheader>
-          <div layout="row" flex>
-            <div flex="10" layout layout-align="center center">
-              <span class="md-body-1">Rated</span>
-            </div>
-            <md-button ng-click="selectRated(rating)" ng-class="isSelectedClass(rating, params.mRated)" flex class="md-raised" ng-repeat="rating in config.ratingsList">
-              {{ rating }}
-              <md-tooltip>
-                By {{ rating }} & below
-              </md-tooltip>
-            </md-button>
-          </div>
-          <div layout flex>
-	          <div flex="10" layout layout-align="center center">
-			        <span class="md-body-1">imdbR</span>
-			      </div>
-	          <md-slider ng-mouseup="selectRating(mRating)" flex class="md-warn" md-discrete ng-model="params.mRating" step="1" min="1" max="10"></md-slider>
-          </div>
-          <div flex>
-			      <fieldset class="standard" flex>
-			        <legend>Choose Genre</legend>
-			        <div layout="row" layout-wrap>
-			          <div flex="50" ng-repeat="gen in config.genreList" ng-click="toggleGenre(gen, params.genre)">
-			            <md-checkbox>
-			              {{ gen }}
-			            </md-checkbox>
-			          </div>
-			        </div>
-			      </fieldset>
-			    </div>
-			    <md-button class="md-raised md-primary" ng-click="createTag()">
-		        Create Tag
-		        <md-tooltip>
-		          Add Tag to Channel
-		        </md-tooltip>
-		      </md-button>
-        </md-list>
-        <!-- specific section -->
-        <section layout="row" flex layout-align="center center" ng-if="params.mType === 'specific'">
-          <md-list flex>
-            <md-subheader class="md-no-sticky">Specific</md-subheader>
+  <section class="flex">
+    <md-card flex layout-padding layout-margin>
+	  <!-- <md-content flex class="md-padding fit" layout-fill layout-padding layout-margin> -->
+	    <section layout="row" flex layout-align="start center">
+	      <md-button class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()">
+	        <md-tooltip>
+	          Close
+	        </md-tooltip>
+	      </md-button>
+	    </section>
+	    <!-- <section layout="row" flex layout-align="center center">
+	      <label class="md-display-1">{{ title }}</label>
+	    </section> -->
+	    <section layout="row" flex layout-align="center center">
+	      <md-card flex class="md-padding" layout="row">
+		      <md-input-container flex>
+	          <label>Channel Name</label>
+	          <input ng-model="selectedChannel.name">
+	        </md-input-container>
+	      </md-card>
+	    </section>
+	    <section layout="row" flex layout-align="center center">
+	      <md-card flex class="md-padding" layout="column">
+	        <section layout="row" flex layout-align="center center">
 	          <div layout="row" flex>
-	            <md-button ng-class="isSelectedClass(specific.type, params.sType)" ng-click="selectItem(specific.type, 'sType')" ng-repeat="specific in config.specificList" class="md-raised">
-	              {{ specific.name }} 
+	            <md-button ng-click="$parent.params.mType = filter.type" ng-repeat="filter in config.filterList" class="md-raised" ng-class="isSelectedClass(filter.type, params.mType)">
+	              {{ filter.name }} 
 	              <md-tooltip>
-	                {{ specific.desc }} 
+	                {{ filter.desc }} 
 	              </md-tooltip>
 	            </md-button>
 	          </div>
-	          <div class = "flex-scroll">
-		          <md-list-item flex class="md-1-line" ng-repeat="item in media | filter: filterMedia()" ng-click="createSpecific(item)">
-				        <img ng-src="{{item.poster}}" class="md-avatar"/>
-				        <div class="md-list-item-text">
-				          <p>{{ item.name }}</p>
+	        </section>
+	        <!-- general section -->
+	        <md-list ng-if="params.mType === 'general'">
+	          <md-subheader class="md-no-sticky">Filters</md-subheader>
+	          <div layout="row" flex>
+	            <div flex="10" layout layout-align="center center">
+	              <span class="md-body-1">Rated</span>
+	            </div>
+	            <md-button ng-click="selectRated(rating)" ng-class="isSelectedClass(rating, params.mRated)" flex class="md-raised" ng-repeat="rating in config.ratingsList">
+	              {{ rating }}
+	              <md-tooltip>
+	                By {{ rating }} & below
+	              </md-tooltip>
+	            </md-button>
+	          </div>
+	          <div layout flex>
+		          <div flex="10" layout layout-align="center center">
+				        <span class="md-body-1">imdbR</span>
+				      </div>
+		          <md-slider ng-mouseup="selectRating(mRating)" flex class="md-warn" md-discrete ng-model="params.mRating" step="1" min="1" max="10"></md-slider>
+	          </div>
+	          <div flex>
+				      <fieldset class="standard" flex>
+				        <legend>Choose Genre</legend>
+				        <div layout="row" layout-wrap class = "flex-scroll general">
+				          <div flex="50" ng-repeat="gen in config.genreList" ng-click="toggleGenre(gen, params.genre)">
+				            <md-checkbox>
+				              {{ gen }}
+				            </md-checkbox>
+				          </div>
 				        </div>
-				      </md-list-item>
-			      </div>
+				      </fieldset>
+				    </div>
+				    <md-button class="md-raised md-primary" ng-click="createTag()">
+			        Create Tag
+			        <md-tooltip>
+			          Add Tag to Channel
+			        </md-tooltip>
+			      </md-button>
 	        </md-list>
-		    </section>
-      </md-card>
-      <md-card flex class="md-padding" layout="column">
-        <md-subheader class="md-no-sticky">Media</md-subheader>
-        <md-chips ng-model="selectedChannel.general" readonly="false">
-		      <md-chip-template md-contact-image="{{ $chip.poster }}">
-		        <strong>{{$chip.type}}</strong>
-		        <strong>{{$chip.name}}</strong>
-			      <strong>{{$chip.rated}}</strong>
-			      <strong>{{$chip.rating}}</strong>
-		        <strong>{{$chip.genre}}</strong>
-		      </md-chip-template>
-		    </md-chips>
-		    <md-contact-chips
-	        ng-model="selectedChannel.specific"
-	        md-contact-name="name"
-	        md-contact-image="poster"
-	        md-contact-email="type"
-	        readonly="false">
-	    </md-contact-chips>
-      </md-card>
-    </section>
-    <section layout="row" flex layout-align="center center"> 
-      <md-button class="md-raised md-primary" aria-label="Save" ng-click="save()">
-        Save
-        <md-tooltip>
-          Save Channel
-        </md-tooltip>
-      </md-button>
-      <md-button class="md-raised" aria-label="Cancel" ng-click="close()">
-        Cancel
-        <md-tooltip>
-          Cancel Edit
-        </md-tooltip>
-      </md-button>
-    </section>
-  </md-content>
+	        <!-- specific section -->
+	        <section layout="row" flex layout-align="center center" ng-if="params.mType === 'specific'">
+	          <md-list flex>
+	            <md-subheader class="md-no-sticky">Specific</md-subheader>
+		          <div layout="row" flex>
+		            <md-button ng-class="isSelectedClass(specific.type, params.sType)" ng-click="selectItem(specific.type, 'sType')" ng-repeat="specific in config.specificList" class="md-raised">
+		              {{ specific.name }} 
+		              <md-tooltip>
+		                {{ specific.desc }} 
+		              </md-tooltip>
+		            </md-button>
+		          </div>
+		          <div class = "flex-scroll specific">
+			          <md-list-item flex class="md-1-line" ng-repeat="item in media | filter: filterMedia()" ng-click="createSpecific(item)">
+					        <img ng-src="{{item.poster}}" class="md-avatar"/>
+					        <div class="md-list-item-text">
+					          <p>{{ item.name }}</p>
+					        </div>
+					      </md-list-item>
+				      </div>
+		        </md-list>
+			    </section>
+	      </md-card>
+	      <md-card flex class="md-padding" layout="column">
+	        <md-subheader class="md-no-sticky">Media</md-subheader>
+	        <md-chips ng-model="selectedChannel.general" readonly="false">
+			      <md-chip-template md-contact-image="{{ $chip.poster }}">
+			        <strong>{{$chip.type}}</strong>
+			        <strong>{{$chip.name}}</strong>
+				      <strong>{{$chip.rated}}</strong>
+				      <strong>{{$chip.rating}}</strong>
+			        <strong>{{$chip.genre}}</strong>
+			      </md-chip-template>
+			    </md-chips>
+			    <md-contact-chips
+		        ng-model="selectedChannel.specific"
+		        md-contact-name="name"
+		        md-contact-image="poster"
+		        md-contact-email="type"
+		        readonly="false">
+		    </md-contact-chips>
+	      </md-card>
+	    </section>
+	    <section layout="row" flex layout-align="center center"> 
+	      <md-button class="md-raised md-primary" aria-label="Save" ng-click="save()">
+	        Save
+	        <md-tooltip>
+	          Save Channel
+	        </md-tooltip>
+	      </md-button>
+	      <md-button class="md-raised" aria-label="Cancel" ng-click="close()">
+	        Cancel
+	        <md-tooltip>
+	          Cancel Edit
+	        </md-tooltip>
+	      </md-button>
+	    </section>
+	  <!-- </md-content> -->
+	  </md-card>
+  </section>
 </div>

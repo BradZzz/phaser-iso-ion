@@ -13,6 +13,11 @@ var channelSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.Mixed,
     }
   ],
+  lastId: { type: String }, //Last media watching
+  lastEp: { type: String }, //Last media episode, if applicable
+  lastMediaCurrent: { type: Number, default: 0 }, //The number of seconds into media when channel changed
+  lastMediaDuration: { type: Number, default: 0 }, //The number of seconds the current media last
+  lastOffset: { type: Date }, //The last time the channel was watched
 	created: { type: Date, default: Date.now },
 	__v: { type: Number, select: false },
 })
