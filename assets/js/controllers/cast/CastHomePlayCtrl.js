@@ -7,10 +7,11 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   console.log($scope.channels)
   /* The s is for static */
   $scope.sParams = {
+      //switch this out for the s3 path if cloudfront becomes too expensive
       prefix : "http://d1xdkehzbn1ea2.cloudfront.net/",
       suffix : "index.mp4",
       dateFormat : "YYYY-MM-DD HH:mm:ss",
-      tvOdds: .8, //The odds of picking a tv show as opposed to a movie
+      tvOdds: .9, //The odds of picking a tv show as opposed to a movie
   }
   $scope.params = {
       position : 0,
@@ -23,6 +24,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       volume : 100,
       updateOffset : 0,
       mediaView: true,
+      sticky : false,
       epNumber : function () {
         var ep = this.ep.slice(0,-1)
         var rEp = ep.split('/')
@@ -41,7 +43,6 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         sender.playMedia(false)
       } else {
         sender.playMedia(true)
-        //sender.stopMedia()
       }
       $scope.params.paused = !$scope.params.paused
     },
@@ -99,21 +100,25 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       console.log('specific')
       console.log(specific)
       if (picked) {
-        var media = $scope.mediaMap[specific[picked - 1].mId]
+        var media = $scope.mediaMap[picked]
       } else {
         var tSelected = []
         var roll = Math.random()
         for (var file in specific) {
-          if ($scope.mediaMap[specific[file].mId].type === 'tv' && roll <= $scope.sParams.tvOdds) {
+          if (($scope.mediaMap[specific[file].mId].type === 'tv' && roll <= $scope.sParams.tvOdds)) {
             tSelected.push(specific[file])
           } else if ($scope.mediaMap[specific[file].mId].type === 'movie' && roll > $scope.sParams.tvOdds) {
             tSelected.push(specific[file])
           }
         }
+        if (tSelected.length === 0) {
+          tSelected = specific
+        } 
         console.log('picked',tSelected)
         //If the media is not picked, make sure that the media playing before isnt the media playing now
-        var mId = tSelected[Math.floor((Math.random() * tSelected.length))].mId
-        while (mId === $scope.params.media.id && tSelected.length > 1) {
+        console.log($scope.params.media)
+        var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[Math.floor((Math.random() * tSelected.length))].mId
+        while (!$scope.params.sticky && mId === $scope.params.media.id && tSelected.length > 1) {
           mId = tSelected[Math.floor((Math.random() * tSelected.length))].mId
         }
         var media = $scope.mediaMap[mId]
@@ -131,7 +136,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       return $scope.params.ep
     },
     mediaMeta : function(){
-      return _.map($scope.channels[$scope.params.position].specific, function(media){ return $scope.mediaMap[media.mId] });
+      return _.sortBy(_.map($scope.channels[$scope.params.position].specific, function(media){ return $scope.mediaMap[media.mId] }),'name')
     },
     calculateOffset: function(){
       var channelTmp = $scope.channels[$scope.params.position]
@@ -216,6 +221,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   
   /*Listeners*/
   $scope.$on('update', function (scope, media) {
+    console.log('update')
     if (media.playerState === "PLAYING" && $scope.params.updateOffset && $scope.params.updateOffset > 0) {
       var mLength = sender.mediaPosition().duration
       sender.seekMedia( 100 * (($scope.params.updateOffset % mLength) / mLength))
@@ -224,18 +230,16 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     }
   })
   $scope.$on('retry', function () {
+    console.log('retry')
     if ($scope.params.ep) {
       sender.loadCustomMedia( $scope.sParams.prefix + $scope.params.ep + $scope.sParams.suffix )
     }
   })
   $scope.$on('progress', function (scope, progress) {
-    //This doesnt work yet
-    console.log('progress')
-    console.log(scope)
-    console.log(progress)
-    $scope.controls.saveChannelOffset()
-    //document.getElementById('progress').value = progress
-    //$scope.controls.loadMedia()
+    //console.log('progress: ',progress)
+    $scope.safeApply(function () {
+      $scope.params.progress = progress
+    })
   })
   $scope.$on('finish', function () {
     $scope.controls.loadMedia()

@@ -145,7 +145,7 @@
 	      </md-card>
 	    </section>
 	    <section layout="row" flex layout-align="center center"> 
-	      <md-button class="md-raised md-primary" aria-label="Save" ng-click="save()">
+	      <md-button ng-disabled="!selectedChannel.name || chanName()" class="md-raised md-primary" aria-label="Save" ng-click="save()">
 	        Save
 	        <md-tooltip>
 	          Save Channel

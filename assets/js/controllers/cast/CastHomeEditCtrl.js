@@ -52,7 +52,7 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
   $scope.filterMedia = function(){
     return function( item ) {
       console.log(item)
-      return item.type === $scope.params.sType && !_.findWhere($scope.selectedChannel.specific, {'mId':item.imdbId})
+      return item.type === $scope.params.sType && !_.findWhere($scope.selectedChannel.specific, {'mId': item.imdbId})
     };
   }
   $scope.play = function(){
@@ -97,6 +97,16 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
     })
     console.log($scope.selectedChannel)
     _.sortBy($scope.selectedChannel.specific, 'name')
+  }
+  
+  $scope.chanName = function() {
+    for (var chan in $rootScope.channels){
+      if ($rootScope.selectedChannel._id !== $rootScope.channels[chan]._id 
+          && $rootScope.selectedChannel.name === $rootScope.channels[chan].name) {
+        return true
+      }
+    }
+    return false
   }
   
   $scope.createTag = function () {

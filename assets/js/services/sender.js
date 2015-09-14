@@ -10,7 +10,7 @@ angular.module('blast').service('sender', function ($rootScope) {
 	/**
 	 * Progress bar update timer delay
 	 **/
-	var PROGRESS_BAR_UPDATE_DELAY = 1000;
+	var PROGRESS_BAR_UPDATE_DELAY = 2000;
 	/**
 	 * Custom message namespace for debug channel
 	 **/
@@ -151,7 +151,6 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 * Initialization
 	 */
 	this.setup = function() {
-	  console.log('initialize')
 	  thisRetry = 0
 	  var sessionRequest = new chrome.cast.SessionRequest(applicationID);
 	  var apiConfig = new chrome.cast.ApiConfig(sessionRequest,
@@ -462,16 +461,12 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    appendMessage('no session');
 	    return;
 	  }
+	  
 	  if (mediaURL) {
 	    currentMediaURL = mediaURL
 	    console.log('loading...' + mediaURL);
 	    var mediaInfo = new chrome.cast.media.MediaInfo(mediaURL);
 	  }
-	  /*else {
-	    console.log('loading...' + currentMediaURL);
-	    //appendMessage('loading...' + currentMediaURL);
-	    var mediaInfo = new chrome.cast.media.MediaInfo(currentMediaURL);
-	  }*/
 
 	  mediaInfo.contentType = mediaTypes[currentMediaIndex];
 	  var request = new chrome.cast.media.LoadRequest(mediaInfo);
@@ -499,9 +494,10 @@ angular.module('blast').service('sender', function ($rootScope) {
 
 	  code = '  session.loadMedia(request,onMediaDiscovered,onMediaError);\n\n' +
 	      '  onMediaDiscovered() {\n' +
+	      ' console.log("This code actually does something!")\n' + 
 	      '    media.addUpdateListener(onMediaStatusUpdate);\n' +
 	      '    timer = setInterval(updateCurrentTime, PROGRESS_BAR_UPDATE_DELAY);' +
-	      '  }\n';
+	      '  }\n'
 
 	  showCodeSnippet(code, 'sender');
 
@@ -535,10 +531,9 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  currentMedia = mediaSession;
 	  mediaSession.addUpdateListener(onMediaStatusUpdate);
 	  mediaCurrentTime = currentMedia.currentTime;
-	  playpauseresume.innerHTML = 'Pause Media';
-	  if (!timer) {
-	    timer = setInterval(updateCurrentTime, PROGRESS_BAR_UPDATE_DELAY);
-	  }
+	  //if (!timer) {
+	  timer = setInterval(updateCurrentTime, PROGRESS_BAR_UPDATE_DELAY);
+	  //}
 	}
 
 	/**
@@ -566,19 +561,15 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 */
 	function onMediaStatusUpdate(isAlive) {
 	  if (progressFlag) {
-	    //document.getElementById('progress').value = parseInt(100 * currentMedia.currentTime / currentMedia.media.duration);
-	    $rootScope.$broadcast('progress', parseInt(100 * currentMedia.currentTime / currentMedia.media.duration))
-	    //document.getElementById('progress_tick').innerHTML = currentMedia.currentTime;
-	    console.log(currentMedia)
-	    //document.getElementById('duration').innerHTML = currentMedia.media.duration;
+	    if (!timer) {
+	      timer = setInterval(updateCurrentTime, PROGRESS_BAR_UPDATE_DELAY);
+	    }
 	    $rootScope.$broadcast('update', currentMedia);
 	    if (!isAlive && currentMedia.idleReason !== 'INTERRUPTED') {
 	      thisRetry = 0
 	    	$rootScope.$broadcast('finish');
 	    }
 	  }
-	  $('#playerstate').text(currentMedia.playerState)
-	  //document.getElementById('playerstate').innerHTML = currentMedia.playerState;
 	}
 
 	/**
@@ -590,11 +581,10 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    return;
 	  }
 
-	  if (timer) {
-	    clearInterval(timer);
-	  }
-
     if (!pause) {
+      if (timer) {
+        clearInterval(timer)
+      }
       currentMedia.pause(null,
         mediaCommandSuccessCallback.bind(this, 'paused ' +
             currentMedia.sessionId), onError);
@@ -673,7 +663,6 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    return;
 
 	  if (!mute) {
-	    console.log('not muted')
 	    session.setReceiverVolumeLevel(level,mediaCommandSuccessCallback.bind(this, 'media set-volume done'),onError);
 	    currentVolume = level;
 	  }
@@ -842,7 +831,6 @@ angular.module('blast').service('sender', function ($rootScope) {
 
 	this.mediaPosition = function(){
 	  if (currentMedia) {
-	    console.log(currentMedia)
 	    return { 
 	      duration : currentMedia.media.duration,
 	      current : currentMedia.getEstimatedTime(),
@@ -861,12 +849,17 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 * @this seekMedia
 	 */
 	this.seekMedia = function(pos) {
+	  
+	  if (timer) {
+      clearInterval(timer);
+    }
+	  
 	  console.log('Seeking ' + currentMedia.sessionId + ':' +
 	    currentMedia.mediaSessionId + ' to ' + pos + '%');
-	  progressFlag = 1;
+	  progressFlag = 0;
 	  var request = new chrome.cast.media.SeekRequest();
 	  request.currentTime = pos * currentMedia.media.duration / 100;
-	  request.resumeState = chrome.cast.media.PlayerState.PAUSED;
+	  request.resumeState = chrome.cast.media.PlayerState.PLAYBACK_START;
 	  currentMedia.seek(request,
 	    onSeekSuccess.bind(this, 'media seek done'),
 	    onError);
@@ -888,9 +881,11 @@ angular.module('blast').service('sender', function ($rootScope) {
 	 * @param {string} info A message string
 	 */
 	function onSeekSuccess(info) {
-	  console.log(info);
-	  appendMessage(info);
-	  setTimeout(function() {progressFlag = 1},1500);
+	  console.log(info)
+	  setTimeout(function() {
+	    progressFlag = 1
+	    timer = setInterval(updateCurrentTime, PROGRESS_BAR_UPDATE_DELAY)
+	  },2000)
 	}
 
 	/**
@@ -909,21 +904,16 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  if (!session || !currentMedia) {
 	    return;
 	  }
-	  console.log(currentMedia)
 	  
 	  if (currentMedia.media) {
-	    console.log('media')
 	    var cTime = currentMedia.getEstimatedTime()
 	    $rootScope.$broadcast('progress', parseInt(100 * cTime / currentMedia.media.duration))
-	    //document.getElementById('progress_tick').innerHTML = cTime;
 	  }
 	  else {
-	    console.log('no media')
 	    $rootScope.$broadcast('progress', 0)
-	    //document.getElementById('progress_tick').innerHTML = 0;
-	    //if (timer) {
-	    //  clearInterval(timer);
-	    //}
+	    if (timer) {
+	      clearInterval(timer);
+	    }
 	  }
 	}
 

@@ -111,7 +111,7 @@
 	       <md-list flex ng-if="!params.mediaView">
            <md-subheader class="md-no-sticky">Media</md-subheader>
            <div class = "flex-scroll">
-             <md-list-item flex class="md-1-line" ng-repeat="item in controls.mediaMeta()" ng-click="controls.loadMedia($index + 1)">
+             <md-list-item flex class="md-1-line" ng-repeat="item in controls.mediaMeta()" ng-click="controls.loadMedia(item.id)">
                <img ng-src="{{item.poster}}" class="md-avatar"/>
                <div class="md-list-item-text">
                  <p>{{ item.name }}</p>
@@ -129,6 +129,10 @@
             <md-button flex layout-align="start center" class="ion-arrow-down-b md-raised md-cornered" ng-click="controls.chanDown()"></md-button>
 	          <md-subheader class="md-no-sticky">Volume</md-subheader>
 	          <md-slider flex min="0" max="100" ng-model="params.volume" ng-mouseup="controls.setVolume()"></md-slider>
+	          <md-subheader class="md-no-sticky">Options</md-subheader>
+	          <md-checkbox ng-model="params.sticky" class="md-padding">
+		          Sticky
+		        </md-checkbox>
 	        </md-card>
         </div>
       </div>

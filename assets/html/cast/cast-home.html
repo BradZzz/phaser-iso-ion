@@ -17,7 +17,7 @@
 	<section class="flex">
 	  <md-card layout-margin layout-padding flex>
 		  <section layout="row" layout-align="end center">
-	      <md-button class="ion-edit md-raised md-cornered" aria-label="Edit" ng-click="edit()">
+	      <md-button ng-disabled="!($parent.channels && $parent.media)" class="ion-edit md-raised md-cornered" aria-label="Edit" ng-click="edit()">
 	        <md-tooltip>
 	          Edit
 	        </md-tooltip>
@@ -27,7 +27,7 @@
 			  <label class="md-display-4">{{ title }}</label>
 			</section>
 			<section layout="row" flex layout-align="center center"> 
-			  <md-button class="ion-arrow-right-b cast-play md-fab md-raised" aria-label="Play" ng-click="play()">
+			  <md-button ng-disabled="!($parent.channels && $parent.media)" class="ion-arrow-right-b cast-play md-fab md-raised" aria-label="Play" ng-click="play()">
 		      <md-tooltip>
 		        Play
 		      </md-tooltip>

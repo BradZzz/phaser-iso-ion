@@ -4,6 +4,11 @@ module.exports = function (app) {
   var apicache = require('apicache').options({ debug: !app.get('prod') })
   var cache    = apicache.middleware
 
+  app.get('/api/v1/messages/test', cache(), function (req, res) {
+    console.log('here')
+    res.status(200).json({'some':'here'})
+  })
+    
   app.get('/api/v1/messages', cache(), function (req, res) {
     req.apicacheGroup = req.query.category
 
