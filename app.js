@@ -32,8 +32,10 @@ var templateConfig = {
 }
 
 if (app.get('prod')) {
+  console.log('is prod!')
   templateConfig.partialsDir = path.join(__dirname, 'dist')
 } else {
+  console.log('is not prod!')
   templateConfig.partialsDir = __dirname
 }
 
@@ -63,45 +65,6 @@ if (app.get('prod')) {
   app.use(errorhandler())
   app.use(logger('dev'))
 }
-
-//storage.initSync();
-
-//Configure the local strategy for use by Passport.
-//
-// The local strategy require a `verify` function which receives the credentials
-// (`username` and `password`) submitted by the user.  The function must verify
-// that the password is correct and then invoke `cb` with a user object, which
-// will be set at `req.user` in route handlers after authentication.
-/*passport.use(new Strategy(function(username, password, cb) {
-  db.users.findByUsername(username, function(err, user) {
-    if (err) { return cb(err); }
-    if (!user) { return cb(null, false); }
-    if (user.password != password) { return cb(null, false); }
-    return cb(null, user);
-  })
-}))*/
-
-/*app.validateToken = function(user){
-  //The user object should contain an email and an associated token
-  storage.getItem(user.token, function (err, value) {
-   // use value here after making sure expired-ttl key deletion has occured, in that case value === undefined
-   if (value && user.auth === value.email) {
-     value.expires = new moment().add(1, 'h')
-     storage.setItem(user.token, value)
-     return true
-   } else {
-     return false
-   }
-  })
-}
-
-app.generateToken = function(user) {
-  //Create a token key with value user
-  user.expires = new moment().add(1, 'h')
-  var id = rack(user)
-  storage.setItem(id, user)
-  return id
-}*/
 
 // setup routes
 require('./routes/cast')(app)
