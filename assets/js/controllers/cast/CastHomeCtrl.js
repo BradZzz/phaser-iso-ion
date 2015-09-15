@@ -1,4 +1,4 @@
-angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope, $http, $window, $state)
+angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope, $http, $window, $state, $location)
 {
   $scope.title = "MyTv Cast"
   $scope.play = function(){
@@ -7,6 +7,18 @@ angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope,
       $state.go('home-play')
     }
   }
+  
+  $scope.logout = function(){
+    $scope.safeApply(function () {
+      $window.sessionStorage.clear()
+      $rootScope.auth = {}
+    })
+    console.log('logout')
+    console.log($window.sessionStorage)
+    console.log($rootScope.auth)
+    $location.path('/login')
+  }
+  
   $scope.edit = function(){
     console.log($state)
     if ($rootScope.media && $rootScope.channels) {
