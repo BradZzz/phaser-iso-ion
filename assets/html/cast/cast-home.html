@@ -22,6 +22,11 @@
 	          Edit
 	        </md-tooltip>
 	      </md-button>
+	      <md-button ng-disabled="!($parent.channels && $parent.media)" class="ion-power md-raised md-cornered" aria-label="Logout" ng-click="logout()">
+          <md-tooltip>
+            Log Out
+          </md-tooltip>
+        </md-button>
 	    </section>
 		  <section layout="row" flex layout-align="center center">
 			  <label class="md-display-4">{{ title }}</label>

@@ -1,8 +1,9 @@
 angular.module('blast').service('auth', function ($window, $rootScope) {
-  function init() {
+  this.init = function() {
+    console.log('auth')
     if ($window.sessionStorage["auth"]) {
-      $rootScope.auth = JSON.parse($window.sessionStorage["auth"]);
+      $rootScope.auth = $window.sessionStorage["auth"]
     }
   }
-  init()
+  this.init()
 });

@@ -1,4 +1,4 @@
-angular.module('blast').controller('CastHomeLoginCtrl', function ($scope, $rootScope, $http, $window, $state, flash)
+angular.module('blast').controller('CastHomeLoginCtrl', function ($scope, $rootScope, $http, $window, $state, flash, auth)
 {
   $scope.params = {
       login: true,
@@ -22,6 +22,7 @@ angular.module('blast').controller('CastHomeLoginCtrl', function ($scope, $rootS
       console.log('success')
       console.log(res)
       $window.sessionStorage["auth"] = res.data
+      auth.init()
       $state.go('home')
     }, function(err){
       flash.error = "Error Authenticating"
