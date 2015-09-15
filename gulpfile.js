@@ -4,7 +4,7 @@ var gulp   = require('gulp')
 var fs     = require('fs')
 var s3     = require('./lib/gulp-s3')
 var env    = (process.env.NODE_ENV || 'development')
-var ngAnnotate = require('gulp-ng-annotate')
+//var ngAnnotate = require('gulp-ng-annotate')
 
 var shell = require('gulp-shell')
 var livereload = require('gulp-livereload')
@@ -78,7 +78,7 @@ gulp.task('minify', [ 'styles', 'scripts', 'partials' ], function () {
     }))
     .pipe($.useref.assets({ searchPath: '.' }))
     .pipe(jsFilter)
-    .pipe(ngAnnotate()) // TODO: replace gulp-ng-annotate
+    //.pipe(ngAnnotate()) // TODO: replace gulp-ng-annotate
     .pipe($.uglify())
     .pipe(jsFilter.restore())
     .pipe(cssFilter)
