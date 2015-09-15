@@ -74,6 +74,7 @@
   },
   "scripts": {
     "start": "node app.js",
+    "postinstall": "./node_modules/bower/bin/bower install && ./node_modules/gulp/bin/gulp.js s3-assets",
     "test": "tape test/*.js"
   },
   "repository": {
