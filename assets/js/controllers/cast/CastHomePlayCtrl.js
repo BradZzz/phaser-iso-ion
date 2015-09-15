@@ -221,7 +221,6 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   
   /*Listeners*/
   $scope.$on('update', function (scope, media) {
-    console.log('update')
     if (media.playerState === "PLAYING" && $scope.params.updateOffset && $scope.params.updateOffset > 0) {
       var mLength = sender.mediaPosition().duration
       sender.seekMedia( 100 * (($scope.params.updateOffset % mLength) / mLength))
@@ -230,7 +229,6 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     }
   })
   $scope.$on('retry', function () {
-    console.log('retry')
     if ($scope.params.ep) {
       sender.loadCustomMedia( $scope.sParams.prefix + $scope.params.ep + $scope.sParams.suffix )
     }

@@ -1,0 +1,88 @@
+<style>
+  .cast-play {
+    margin-top: 10em;
+  }
+  .channel-list {
+    overflow-y: auto;
+    height: 25em;
+  }
+  md-card.main {
+    height : 97vh;
+  }
+  md-content {
+    margin: 1em;
+  }
+  md-button {
+    background-color : rgba(51, 204, 51, 1);
+  }
+  md-button:hover {
+    background-color: rgba(0, 153, 51, 1);
+  }
+
+</style>
+<div class="fit section-gallery" layout-align="center center" layout-fill>
+  <section class="flex">
+    <md-card flex layout-padding layout-margin class="main" layout="column">
+      <section ng-if="params.login">
+        <form name="loginForm">
+          <div layout layout-sm="column">
+            <md-input-container flex>
+              <label>Email</label>
+              <input ng-model="login.email">
+            </md-input-container>
+            <md-input-container flex>
+              <label>Password</label>
+              <input ng-model="login.pass" type="password">
+            </md-input-container>
+          </div>
+          <section layout="row" flex layout-align="center center"> 
+            <md-button class="md-raised" aria-label="Login" ng-click="login(login)">
+              Login
+              <md-tooltip>
+                Log into myTV
+              </md-tooltip>
+            </md-button>
+            <md-button class="md-raised md-primary" aria-label="Register" ng-click="params.login = false">
+              Register
+              <md-tooltip>
+                Register User
+              </md-tooltip>
+            </md-button>
+          </section>
+        </form>
+      </section>
+      <section ng-if="!params.login">
+	      <form name="registerForm">
+		      <div layout layout-sm="column">
+		        <md-input-container flex>
+		          <label>Email</label>
+		          <input ng-model="register.email">
+		        </md-input-container>
+		        <md-input-container flex>
+		          <label>Password</label>
+		          <input ng-model="register.pass" type="password">
+		        </md-input-container>
+		        <md-input-container flex>
+	            <label>Re-Enter Password</label>
+	            <input ng-model="register.pass2" type="password">
+	          </md-input-container>
+		      </div>
+		      <section layout="row" flex layout-align="center center"> 
+		        <md-button ng-disabled="!register.pass || !register.pass2 || register.pass !== register.pass2 || !register.email" class="md-raised md-primary" aria-label="Register" ng-click="register(register)">
+		          Register
+		          <md-tooltip>
+		            Register User
+		          </md-tooltip>
+		        </md-button>
+		        <md-button class="md-raised" aria-label="Cancel" ng-click="params.login = true">
+		          Cancel
+		          <md-tooltip>
+		            Cancel Registration
+		          </md-tooltip>
+		        </md-button>
+	        </section>
+		    </form>
+	    </section>
+    </md-card>
+  </section>
+</div>
