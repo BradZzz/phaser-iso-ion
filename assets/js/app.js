@@ -124,7 +124,7 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
   $locationProvider.html5Mode(true)
 })
 
-app.run(function ($rootScope, $location, $http, flash) {
+app.run(function ($rootScope, $location, $http, flash, auth) {
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
     console.log('$stateChangeStart')
     console.log('event',event)
@@ -132,8 +132,6 @@ app.run(function ($rootScope, $location, $http, flash) {
     console.log('toParams',toParams)
     console.log('fromState',fromState)
     console.log('fromParams',fromParams)
-    
-    console.log($rootScope.auth)
     
     if (!$rootScope.auth) {
       $location.path('/login')

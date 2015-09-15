@@ -23,9 +23,10 @@
 <div class="fit section-gallery" layout-align="center center" layout-fill>
   <section class="flex">
     <md-card flex layout-padding layout-margin class="main" layout="column">
-      <section ng-if="params.login">
+      <section layout-padding layout-margin ng-if="params.login" layout-align="center center">
+        <h1 class="md-display-3">{{ params.sLogin }}</h1>
         <form name="loginForm">
-          <div layout layout-sm="column">
+          <div layout="column">
             <md-input-container flex>
               <label>Email</label>
               <input ng-model="login.email">
@@ -51,9 +52,10 @@
           </section>
         </form>
       </section>
-      <section ng-if="!params.login">
+      <section layout-padding layout-margin ng-if="!params.login" layout-align="center center">
+        <h1 class="md-display-3">{{ params.sRegister }}</h1>
 	      <form name="registerForm">
-		      <div layout layout-sm="column">
+		      <div layout="column">
 		        <md-input-container flex>
 		          <label>Email</label>
 		          <input ng-model="register.email">
