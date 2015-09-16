@@ -1,13 +1,13 @@
-# Blast
+# myTV Stream
 
-### Blast - Webapp for MMS-blasting apps
+### myTV Stream - Webapp for simulated television streaming
 
-This project is a website allowing users to blast their friends with purchasable packs of MMS messages.
+This project is a website allowing users to view their favorite shows organized into channels and streamed like a real television network
 
 
 ### Structure
 
-The backend is a nodejs express webserver, serving index.html, static assets, and a RESTful API for purchasing MMS orders. The orders are backed by a MongoDB database hosted by MongoHQ (compose.io). The frontend is an angularjs single page app and the app itself is hosted on Heroku for ease of deployment and scaling.
+The backend is a nodejs express webserver, serving index.html, static assets, and a RESTful API for organizing channels, media, and users. The assets are backed by a MongoDB database hosted by MongoHQ (mongolab). The frontend is an angularjs single page app and the app itself is hosted on Heroku for ease of deployment and scaling.
 
 
 ### Building

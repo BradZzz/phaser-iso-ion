@@ -32,10 +32,8 @@ var templateConfig = {
 }
 
 if (app.get('prod')) {
-  console.log('is prod!')
   templateConfig.partialsDir = path.join(__dirname, 'dist')
 } else {
-  console.log('is not prod!')
   templateConfig.partialsDir = __dirname
 }
 

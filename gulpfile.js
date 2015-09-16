@@ -4,13 +4,20 @@ var gulp   = require('gulp')
 var fs     = require('fs')
 var s3     = require('./lib/gulp-s3')
 var env    = (process.env.NODE_ENV || 'development')
-//var ngAnnotate = require('gulp-ng-annotate')
+var plumber = require('gulp-plumber')
+var ngAnnotate = require('gulp-ng-annotate')
 
 var shell = require('gulp-shell')
 var livereload = require('gulp-livereload')
 
 // load all plugins
 var $ = require('gulp-load-plugins')()
+
+var assetCache = {
+  name   : 'mytv',
+  bucket : 'mytv.cached.out.assets',
+  path   : '/mytv/assets/'
+}
 
 var paths = {
   css: [ 'assets/css/*.less' ],
@@ -19,6 +26,10 @@ var paths = {
 }
 
 var ASSET_VERSION_SUFFIX = env
+
+var onError = function (err) {  
+  console.log(err);
+};
 
 gulp.task('clean', function () {
   return gulp.src([ 'dist', '.tmp' ], { read: false }).pipe($.clean())
@@ -59,7 +70,7 @@ gulp.task('partials', function () {
       quotes: true
     }))
     .pipe($.ngHtml2js({
-      moduleName: "blast",
+      moduleName: assetCache.name,
       prefix: "/assets/html/"
     }))
     .pipe(gulp.dest(".tmp/html"))
@@ -71,6 +82,9 @@ gulp.task('minify', [ 'styles', 'scripts', 'partials' ], function () {
   var cssFilter = $.filter('**/*.css')
 
   return gulp.src('*.html')
+    /*.pipe(plumber({
+      errorHandler: onError
+    }))*/
     .pipe($.inject(gulp.src('.tmp/html/**/*.js'), {
       read: false,
       starttag: '<!-- inject:partials -->',
@@ -78,7 +92,7 @@ gulp.task('minify', [ 'styles', 'scripts', 'partials' ], function () {
     }))
     .pipe($.useref.assets({ searchPath: '.' }))
     .pipe(jsFilter)
-    //.pipe(ngAnnotate()) // TODO: replace gulp-ng-annotate
+    .pipe(ngAnnotate()) // TODO: replace gulp-ng-annotate
     .pipe($.uglify())
     .pipe(jsFilter.restore())
     .pipe(cssFilter)
@@ -93,7 +107,7 @@ gulp.task('minify', [ 'styles', 'scripts', 'partials' ], function () {
 gulp.task('html', [ 'minify', 'asset-version' ], function () {
   return gulp.src('dist/*.html')
     //.pipe($.prefix('https://stickers.snaps.photo/blast/assets/', [
-    .pipe($.prefix('https://stickers.snaps.photo/blast/assets/' + ASSET_VERSION_SUFFIX, [
+    .pipe($.prefix('https://' + assetCache.bucket + assetCache.path + ASSET_VERSION_SUFFIX, [
       { match: "script[src]", attr: "src" },
       //{ match: "link[href]", attr: "href" }
     ]))
@@ -129,9 +143,12 @@ gulp.task('s3-assets', [ 'build', 'asset-version' ], function () {
     .pipe(s3({
       key: process.env.AWS_ACCESS_KEY_ID,
       secret: process.env.AWS_SECRET_ACCESS_KEY,
-      bucket: "snaps-stickers"
+      //bucket: "snaps-stickers"
+      bucket: assetCache.bucket
+      //  assetCache.bucket + assetCache.path
     }, {
-      uploadPath: '/blast/assets/' + ASSET_VERSION_SUFFIX,
+      //uploadPath: '/blast/assets/' + ASSET_VERSION_SUFFIX,
+      uploadPath: assetCache.path + ASSET_VERSION_SUFFIX,
       gzippedOnly: true
     }))
 })
