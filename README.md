@@ -46,12 +46,6 @@ The following environment variables are expected to be available:
 `MONGODB`
 `AWS_ACCESS_KEY_ID`
 `AWS_SECRET_ACCESS_KEY`
-`STRIPE_PUBLIC_KEY_LIVE`
-`STRIPE_PUBLIC_KEY_TEST`
-`STRIPE_SECRET_KEY_LIVE`
-`STRIPE_SECRET_KEY_TEST`
-`TWILIO_ACCOUNT_SID`
-`TWILIO_AUTH_TOKEN`
 
 ### Inspiration
 
