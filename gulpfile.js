@@ -107,7 +107,7 @@ gulp.task('minify', [ 'styles', 'scripts', 'partials' ], function () {
 gulp.task('html', [ 'minify', 'asset-version' ], function () {
   return gulp.src('dist/*.html')
     //.pipe($.prefix('https://stickers.snaps.photo/blast/assets/', [
-    .pipe($.prefix('https://' + assetCache.bucket + assetCache.path + ASSET_VERSION_SUFFIX, [
+    .pipe($.prefix('https://s3.amazonaws.com/' + assetCache.bucket + assetCache.path + ASSET_VERSION_SUFFIX, [
       { match: "script[src]", attr: "src" },
       //{ match: "link[href]", attr: "href" }
     ]))
