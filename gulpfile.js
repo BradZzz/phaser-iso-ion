@@ -82,9 +82,9 @@ gulp.task('minify', [ 'styles', 'scripts', 'partials' ], function () {
   var cssFilter = $.filter('**/*.css')
 
   return gulp.src('*.html')
-    /*.pipe(plumber({
+    .pipe(plumber({
       errorHandler: onError
-    }))*/
+    }))
     .pipe($.inject(gulp.src('.tmp/html/**/*.js'), {
       read: false,
       starttag: '<!-- inject:partials -->',
