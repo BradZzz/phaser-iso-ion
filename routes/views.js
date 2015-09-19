@@ -1,5 +1,4 @@
 var mobileDetect = require('mobile-detect')
-var Category = require('../models/category')
 var conf = require('../lib/conf')
 var path = require('path')
 
@@ -37,13 +36,14 @@ module.exports = function (app) {
       if (subdomain === 'www') subdomain = undefined
 
       var md = new mobileDetect(req.headers['user-agent'])
-      var params = {
+      /*var params = {
         isMobile: !!md.mobile(),
         stripePublicKey: conf.STRIPE_PUBLIC_KEY,
         category: subdomain
       }
-
-      params.category = subdomain
+      params.category = subdomain*/
+      var params = {}
+      
       res.render('index', params)
     }
   })

@@ -35,7 +35,11 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
 
   //This is a copy of all the available media meta
   $scope.media = $rootScope.media
-  console.log($scope.media)
+  for (var media in $scope.selectedChannel.specific){
+    $scope.selectedChannel.specific[media].name = $scope.media[$scope.selectedChannel.specific[media].id].name
+    $scope.selectedChannel.specific[media].poster = $scope.media[$scope.selectedChannel.specific[media].id].poster
+  }
+  console.log($scope.selectedChannel)
 
   for (var index in $scope.media) {
     for (var gIndex in $scope.media[index].genre) {
@@ -51,8 +55,7 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
   
   $scope.filterMedia = function(){
     return function( item ) {
-      console.log(item)
-      return item.type === $scope.params.sType && !_.findWhere($scope.selectedChannel.specific, {'mId': item.imdbId})
+      return item.type === $scope.params.sType && !_.findWhere($scope.selectedChannel.specific, {'id': item.id})
     };
   }
   $scope.play = function(){
@@ -84,20 +87,28 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
   }
   
   $scope.createSpecific = function (media){
-    console.log(media)
-    console.log($scope.selectedChannel)
-    $scope.selectedChannel.specific.push({
-      name : JSON.parse(JSON.stringify(media.name)),
-      poster : JSON.parse(JSON.stringify(media.poster)),
-      rated : JSON.parse(JSON.stringify(media.rated)),
-      rating : JSON.parse(JSON.stringify(media.imdbRating)),
-      genre : JSON.parse(JSON.stringify(media.genre)),
-      mId : JSON.parse(JSON.stringify(media.imdbId)),
-      type : JSON.parse(JSON.stringify($scope.params.mType))
-    })
-    console.log($scope.selectedChannel)
-    _.sortBy($scope.selectedChannel.specific, 'name')
+    $scope.selectedChannel.specific.push(
+        { 'id' : media.id, 
+          'name' : $scope.media[media.id].name,
+          'poster' : $scope.media[media.id].poster}
+    )
+    console.log($scope.selectedChannel.specific)
   }
+  
+  /*$scope.constructChips = function(){
+    console.log('construct chips')
+    var bagOChips = []
+    for (var index in $scope.selectedChannel.specific) {
+      var slctIndex = $scope.selectedChannel.specific[index]
+      bagOChips.push({
+        "name" : $scope.media[slctIndex].name,
+        "poster" : $scope.media[slctIndex].poster,
+        "type" : $scope.media[slctIndex].type,
+      })
+    }
+    console.log('bag',bagOChips)
+    return bagOChips
+  }*/
   
   $scope.chanName = function() {
     for (var chan in $rootScope.channels){
@@ -120,10 +131,18 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
       type : JSON.parse(JSON.stringify($scope.params.mType)),
     })
   }
+  
   $scope.save = function(){
     if ('$$hashKey' in $scope.selectedChannel) {
       delete $scope.selectedChannel['$$hashKey']
-      //Everything besides the imdbid key needs to be deleted here
+    }
+    for (var media in $scope.selectedChannel.specific){
+      if ('name' in $scope.selectedChannel.specific[media]) {
+        delete $scope.selectedChannel.specific[media]['name']
+      }
+      if ('poster' in $scope.selectedChannel.specific[media]) {
+        delete $scope.selectedChannel.specific[media]['poster']
+      }
     }
     $http({
       url: '/api/v1/cast/post/channel',

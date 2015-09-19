@@ -2,9 +2,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
 {
   sender.setup()
   $scope.channels = $rootScope.channels
-  $scope.mediaMap = {}
+  $scope.media = $rootScope.media
   
-  console.log($scope.channels)
+  //console.log($scope.channels)
   /* The s is for static */
   $scope.sParams = {
       //switch this out for the s3 path if cloudfront becomes too expensive
@@ -33,7 +33,6 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   }
   $scope.controls = {
     init : function() {
-      $scope.formatMedia()
       this.calculateOffset()
       this.updateParams()
     },
@@ -100,14 +99,14 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       console.log('specific')
       console.log(specific)
       if (picked) {
-        var media = $scope.mediaMap[picked]
+        var media = $scope.media[picked]
       } else {
         var tSelected = []
         var roll = Math.random()
         for (var file in specific) {
-          if (($scope.mediaMap[specific[file].mId].type === 'tv' && roll <= $scope.sParams.tvOdds)) {
+          if (($scope.media[specific[file].id].type === 'tv' && roll <= $scope.sParams.tvOdds)) {
             tSelected.push(specific[file])
-          } else if ($scope.mediaMap[specific[file].mId].type === 'movie' && roll > $scope.sParams.tvOdds) {
+          } else if ($scope.media[specific[file].id].type === 'movie' && roll > $scope.sParams.tvOdds) {
             tSelected.push(specific[file])
           }
         }
@@ -117,11 +116,11 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         console.log('picked',tSelected)
         //If the media is not picked, make sure that the media playing before isnt the media playing now
         console.log($scope.params.media)
-        var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[Math.floor((Math.random() * tSelected.length))].mId
+        var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[Math.floor((Math.random() * tSelected.length))].id
         while (!$scope.params.sticky && mId === $scope.params.media.id && tSelected.length > 1) {
-          mId = tSelected[Math.floor((Math.random() * tSelected.length))].mId
+          mId = tSelected[Math.floor((Math.random() * tSelected.length))].id
         }
-        var media = $scope.mediaMap[mId]
+        var media = $scope.media[mId]
       }
       $scope.safeApply(function () {
         $scope.params.media = media
@@ -136,7 +135,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       return $scope.params.ep
     },
     mediaMeta : function(){
-      return _.sortBy(_.map($scope.channels[$scope.params.position].specific, function(media){ return $scope.mediaMap[media.mId] }),'name')
+      return _.sortBy(_.map($scope.channels[$scope.params.position].specific, function(media){ return $scope.media[media.id] }),'name')
     },
     calculateOffset: function(){
       var channelTmp = $scope.channels[$scope.params.position]
@@ -156,7 +155,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         $scope.params.updateOffset = channelTmp.lastMediaCurrent + dWait
         //Here we want to use the same episodes and media as before
         $scope.safeApply(function () {
-          $scope.params.media = media = $scope.mediaMap[$scope.channels[$scope.params.position].lastId]
+          $scope.params.media = media = $scope.media[$scope.channels[$scope.params.position].lastId]
           if ($scope.params.media.type === 'tv') {
             $scope.params.ep = $scope.channels[$scope.params.position].lastEp
           } else {
@@ -192,30 +191,6 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
           console.log('Error Saving Channel Offset')
         }
       })
-    }
-  }
-  
-  $scope.formatMedia = function(){
-    console.log('rootscope')
-    console.log($rootScope.media)
-    for (var media in $rootScope.media) {
-      var title = $rootScope.media[media]
-      if ('imdbId' in title) {
-        $scope.mediaMap[title.imdbId] = {
-            id : title.imdbId,
-            name : title.name,
-            path : title.path,
-            type : title.type,
-            episodes : title.episodes,
-            poster : title.poster,
-            plot : title.plot,
-            genre : title.genre,
-            rated : title.rated,
-            rating : title.imdbRating,
-            year : title.year,
-            runtime : title.runtime
-        }
-      }
     }
   }
   

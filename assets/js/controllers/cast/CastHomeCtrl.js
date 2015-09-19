@@ -1,4 +1,4 @@
-angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope, $http, $window, $state, $location)
+angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope, $http, $window, $state, $location, mediaUtils)
 {
   $scope.title = "MyTv Cast"
   $scope.play = function(){
@@ -50,7 +50,9 @@ angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope,
             'Content-Type': 'json'
           }
        }).success(function(data) {
-         $rootScope.media = data
+         $scope.safeApply(function () {
+           $rootScope.media = mediaUtils.formatMedia(data)
+         })
       }).error(function(data) {
         console.log('Error1: ' + data)
       })

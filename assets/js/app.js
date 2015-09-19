@@ -8,7 +8,8 @@ var modules = [
   'angular-flash.flash-alert-directive',
   'angular-loading-bar',
   'credit-cards',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'angular-toArrayFilter'
 ]
 
 var role = {
@@ -30,11 +31,6 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
     // CMS
     // ------------------------------------------------------------------------
 
-    /*.state('gallery', {
-      url: "/",
-      templateUrl: "/assets/html/gallery.html",
-      controller: "GalleryCtrl"
-    })*/
     .state('home', {
       url: "/",
       templateUrl: "/assets/html/cast/cast-home.html",
@@ -86,49 +82,12 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
       url: "/mpl",
       templateUrl: "/assets/html/cast/mpl.html"
     })
-    /*.state('category', {
-      abstract: true,
-      url: "/{slug:[\\w-]+}",
-      template: "<div ui-view></div>",
-      resolve: {
-        category: function ($state, $stateParams, $http, flash) {
-          var slug = $stateParams.slug
-
-          return $http({
-            url: '/api/v1/category',
-            method: 'GET',
-            params: {
-              slug: slug
-            }
-          }).then(function (response) {
-            return response.data
-          }, function (err) {
-            console.error("error fetching category", slug, err)
-            flash.error = "error fetching category " + slug
-            $state.go('home.gallery')
-          })
-        }
-      }
-    })
-    .state('category.view', {
-      url: "",
-      templateUrl: "/assets/html/category.html",
-      controller: "CategoryCtrl"
-    })
-    .state('category.edit', {
-      url: "/edit",
-      templateUrl: "/assets/html/category-edit.html",
-      controller: "CategoryEditCtrl"
-    })*/
 
   $locationProvider.html5Mode(true)
 })
 
 app.run(function ($rootScope, $location, $http, flash, auth, $window) {
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-    console.log('$stateChangeStart')
-    console.log($rootScope)
-    console.log($window.sessionStorage)
     
     if (!$rootScope.auth) {
       $location.path('/login')
@@ -142,9 +101,7 @@ app.run(function ($rootScope, $location, $http, flash, auth, $window) {
         }
       }).then(function(res) {
         if (res.status === 200) {
-          console.log('success')
-          console.log(res)
-          if (res.data.role < toState.access) {
+          if ('access' in toState && res.data.role < toState.access) {
             flash.error = "Cannot access elevated content"
             $state.go(fromState.name)
           }

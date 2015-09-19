@@ -1,6 +1,6 @@
 {
-  "name": "Blast",
-  "description": "Blast SMS messages to friends",
+  "name": "myTV",
+  "description": "Stream virtual television to chromecast and browser",
   "license": "MIT",
   "dependencies": {
     "apicache": "0.0.12",

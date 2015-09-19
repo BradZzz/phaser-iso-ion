@@ -114,7 +114,7 @@
 		            </md-button>
 		          </div>
 		          <div class = "flex-scroll specific">
-			          <md-list-item flex class="md-1-line" ng-repeat="item in media | filter: filterMedia()" ng-click="createSpecific(item)">
+			          <md-list-item flex class="md-1-line" ng-repeat="item in media | toArray : false | filter: filterMedia()" ng-click="createSpecific(item)">
 					        <img ng-src="{{item.poster}}" class="md-avatar"/>
 					        <div class="md-list-item-text">
 					          <p>{{ item.name }}</p>
@@ -139,7 +139,6 @@
 		        ng-model="selectedChannel.specific"
 		        md-contact-name="name"
 		        md-contact-image="poster"
-		        md-contact-email="type"
 		        readonly="false">
 		    </md-contact-chips>
 	      </md-card>

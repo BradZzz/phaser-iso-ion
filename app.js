@@ -67,10 +67,10 @@ if (app.get('prod')) {
 // setup routes
 require('./routes/cast')(app)
 require('./routes/user')(app)
-require('./routes/seo')(app)
-require('./routes/order')(app)
-require('./routes/message')(app)
-require('./routes/category')(app)
+//require('./routes/seo')(app)
+//require('./routes/order')(app)
+//require('./routes/message')(app)
+//require('./routes/category')(app)
 require('./routes/views')(app)
 
 app.listen(app.get('port'), function () {

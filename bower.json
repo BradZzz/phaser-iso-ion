@@ -1,5 +1,5 @@
 {
-  "name": "Blast",
+  "name": "mytv",
   "version": "0.0.1",
   "private": "true",
   "dependencies": {
@@ -10,6 +10,7 @@
     "angular-credit-cards": "~2.3.4",
     "angular-loading-bar": "~0.7.1",
     "angular-material": "~0.10.1",
+    "angular-toArrayFilter": "~1.0.1",
     "angular-ui-router": "~0.2.15",
     "ionicons": "~2.0.1",
     "jquery": "~2.1.x",
