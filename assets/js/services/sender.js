@@ -916,6 +916,10 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    }
 	  }
 	}
+	
+	this.getCTime = function() {
+	  return currentMedia.getEstimatedTime()
+	}
 
 	/**
 	 * set the closed captioning track

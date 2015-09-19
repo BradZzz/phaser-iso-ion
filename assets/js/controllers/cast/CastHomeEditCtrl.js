@@ -152,15 +152,13 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
         'Content-Type': 'application/json'
       }
     }).then(function(res) {
-      if (res.status === 200) {
-        if (!_.findWhere($rootScope.channels, {name: $scope.selectedChannel.name})){
-          $rootScope.channels.push($scope.selectedChannel)
-        }
-        $state.go('home-channel')
-      } else {
-        flash.error = "Error saving channel"
-        console.log(res)
+      if (!_.findWhere($rootScope.channels, {name: $scope.selectedChannel.name})){
+        $rootScope.channels.push($scope.selectedChannel)
       }
+      $state.go('home-channel')
+    }, function(err){
+      flash.error = "Error saving channel"
+      console.log(res)
     })
   }
   

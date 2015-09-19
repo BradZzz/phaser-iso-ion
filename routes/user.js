@@ -4,9 +4,8 @@ var crypto       = require('crypto')
 var _            = require('underscore')
 var omdbApi      = require('omdb-client')
 var mongoose     = require('mongoose')
-var storage      = require('node-persist')
 var hat          = require('hat')
-var moment       = require('moment');
+var moment       = require('moment')
 var rack = hat.rack();
 var ObjectId = mongoose.Types.ObjectId
 var return_count = 0
@@ -17,7 +16,7 @@ String.prototype.capitalize = function() {
 
 module.exports = function (app) {
   
-  storage.initSync()
+  app.storage.initSync()
   
   function getHash(pass){
     return crypto.createHash("sha1").update(pass).digest('hex')
@@ -26,12 +25,12 @@ module.exports = function (app) {
   function validateToken(user){
     var deferred = Q.defer()
     //The user object should contain an email, role, and an associated token
-    storage.getItem(user.token, function (err, value) {
+    app.storage.getItem(user.token, function (err, value) {
      if (value && user.auth === value.email && moment(new moment().format()).isAfter(value.expires)) {
        console.log(user)
        console.log(value)
        //refresh token
-       storage.removeItem(user.token, function(err){
+       app.storage.removeItem(user.token, function(err){
          if (err) {
            deferred.reject('error refreshing token')
          }
@@ -59,7 +58,7 @@ module.exports = function (app) {
     var id = rack(cache)
     console.log('generating')
     console.log(cache)
-    storage.setItem(id, cache)
+    app.storage.setItem(id, cache)
     return id
   }
   

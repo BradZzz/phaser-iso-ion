@@ -1,4 +1,4 @@
-angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $scope, $http, $window, $state, sender)
+angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $scope, $http, $window, $state, sender, flash)
 {
   sender.setup()
   $scope.channels = $rootScope.channels
@@ -35,6 +35,27 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     init : function() {
       this.calculateOffset()
       this.updateParams()
+    },
+    like : function() {
+      var ep = $scope.params.media.type === 'movie' ? "" : $scope.params.ep.split("/")
+      $http({
+        url: '/api/v1/cast/post/like',
+        method: "POST",
+        params: {
+          'id'    : $scope.params.media.id,
+          'like'  : sender.getCTime(),
+          'ep'    : ep ? ep[ep.length-2] : "",
+          'token' : $rootScope.auth.token,
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(function(res) {
+        flash.success = "Moment Liked!"
+      }, function (err){
+        console.log(err)
+        flash.error = "Error Liking Moment!"
+      })
     },
     playMedia : function(){
       console.log('play toggle')
@@ -185,11 +206,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
           'Content-Type': 'application/json'
         }
       }).then(function(res) {
-        if (res.status === 200) {
-          console.log('Channel Offset Saved!')
-        } else {
-          console.log('Error Saving Channel Offset')
-        }
+        console.log('Channel Offset Saved!')
+      }, function(err){
+        console.log('Error Saving Channel Offset')
       })
     }
   }

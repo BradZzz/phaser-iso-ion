@@ -20,8 +20,7 @@ angular.module('blast').controller('CastHomeLoginCtrl', function ($scope, $rootS
       }
     }).then(function(res) {
       console.log('success')
-      console.log(res)
-      $window.sessionStorage["auth"] = res.data
+      $window.sessionStorage["auth"] = JSON.stringify(res.data)
       auth.init()
       $state.go('home')
     }, function(err){

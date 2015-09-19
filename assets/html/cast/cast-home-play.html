@@ -101,6 +101,7 @@
 	             </div>
 	             <section layout="row" layout-align="center end" class="small"> 
 	               <md-button class="cast-play md-fab md-raised ion-skip-backward" ng-click="controls.prevMedia()"></md-button>
+	               <md-button class="cast-play md-fab md-raised ion-android-favorite" ng-click="controls.like()"></md-button>
 	               <md-button class="cast-play md-fab md-raised" ng-click="controls.playMedia()" ng-class="playClass()"></md-button>
 	               <md-button class="cast-play md-fab md-raised ion-skip-forward" ng-click="controls.skipMedia()"></md-button>
 	               <md-slider id="progress" class="md-padding md-margin progress" flex min="0" max="100" ng-model="params.progress" ng-mouseup="controls.seekMedia()"></md-slider>

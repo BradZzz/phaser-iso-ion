@@ -1,5 +1,6 @@
 var Media    = require('../models/media')
 var Channel  = require('../models/channel')
+var Like  = require('../models/like')
 var Q = require('q')
 var _ = require('underscore')
 var omdbApi = require('omdb-client')
@@ -12,6 +13,8 @@ String.prototype.capitalize = function() {
 }
 
 module.exports = function (app) {
+  
+  //Get methods
   app.get('/api/v1/cast/get/media', function (req, res) {
     Media.find({}).exec(function (err, media) {
       media = _.sortBy(media, 'name')
@@ -22,7 +25,7 @@ module.exports = function (app) {
       }
     })
   })
-  
+
   app.get('/api/v1/cast/get/channel', function (req, res) {
     Channel.find({}).exec(function (err, chans) {
       chans = _.sortBy(chans, 'position')
@@ -34,18 +37,32 @@ module.exports = function (app) {
     })
   })
   
-  function turnArray(mArray, keyword){
-    if (keyword in mArray) {
-      if (!(mArray[keyword] instanceof Array)) {
-        mArray[keyword] = [JSON.parse(mArray[keyword])]
-      } else {
-        for (var media in mArray[keyword]) {
-          mArray[keyword][media] = JSON.parse(mArray[keyword][media])
+  //Post methods
+  app.post('/api/v1/cast/post/like', function (req, res){
+    console.log(req.query)
+    //Proper params?
+    if ('id' in req.query && 'like' in req.query && 'ep' in req.query && 'token' in req.query){
+      //Make sure the user is allowed to like the media...
+      app.storage.getItem(req.query.token, function (err, value) {
+        console.log('like')
+        console.log(value)
+        var params = {
+          id:   req.query.id,
+          ep:   req.query.ep,
+          like: req.query.like,
+          by:   value.email,
         }
-      }
+        Like.findOneAndUpdate(params, params, {upsert:true}, function(err){
+          if (err) {
+            console.log(err)
+            return res.status(500).json({ debug: err })
+          } else {
+            return res.status(200).json()
+          }
+        })
+      })
     }
-    return mArray
-  }
+  })
   
   app.post('/api/v1/cast/delete/channel', function (req, res){
     if ('_id' in req.query) {
@@ -196,6 +213,19 @@ module.exports = function (app) {
       deferred.resolve(folders)
     });
     return deferred.promise
+  }
+  
+  function turnArray(mArray, keyword){
+    if (keyword in mArray) {
+      if (!(mArray[keyword] instanceof Array)) {
+        mArray[keyword] = [JSON.parse(mArray[keyword])]
+      } else {
+        for (var media in mArray[keyword]) {
+          mArray[keyword][media] = JSON.parse(mArray[keyword][media])
+        }
+      }
+    }
+    return mArray
   }
   
   function update(prefix){

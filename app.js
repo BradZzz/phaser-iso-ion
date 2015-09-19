@@ -12,6 +12,7 @@ var compression  = require('compression')
 var bodyParser   = require('body-parser')
 var utils        = require('./lib/utils')
 var app          = module.exports = express()
+app.storage = require('node-persist')
 
 var TOKEN_SECRET = process.env.TOKEN_SECRET || 'dotdashdot-cast'
 
