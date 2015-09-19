@@ -35,10 +35,6 @@ You can now run `node app.js` to run the localhost server. This is mainly used f
 
 ### Todo
 
-* randomization of sent messages and previews
-* expose category cms on prod
-* support multiple servers (message scheduling)
-
 ### Environment Variables
 
 The following environment variables are expected to be available:
@@ -49,51 +45,7 @@ The following environment variables are expected to be available:
 
 ### Inspiration
 
-* Cats
-  * http://www.catfacts.co
-  * https://www.catattack.co
-* Dogs
-  * http://pugaday.co
-  * https://corgisplash.com
-* Goats
-  * https://goatattack.com
 
-### Ideas
-
-* Ionic App using native in-app purchases
-* Admin category page for editing a category's contents
-
-Categories: (risk 1=low; 5=high; -1=not interested)
-  * Inspirational quotes (1)
-  * upload your own shit
-  * Gross shit
-    * lemon party
-    * blue waffles
-  * Religious (1)
-  * Weed pics (1)
-  * Dick pics (4)
-  * Word a day - vocabulary (1)
-  * Chinese proverbs (1)
-  * Fortune cookies (1)
-  * Top GIFs
-    * GoT
-    * Silicon Valley
-    * Puppies
-    * Kitties
-    * Shark week
-    * Weird Japanese Shit
-    * Kanye
-    * Beyonce
-    * Rihanna
-
-Functionality:
-  * Friend proxy..
-    * Sometimes it's your friend responding, sometimes it's an AI
-
-https://instagram.com/unspirational
-https://instagram.com/thegoodquote
-http://giphy.com/gameofthrones
-http://www.gifanator.com
 
 ### License
 
