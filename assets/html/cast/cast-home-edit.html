@@ -126,21 +126,23 @@
 	      </md-card>
 	      <md-card flex class="md-padding media-filter" layout="column">
 	        <md-subheader class="md-no-sticky">Media</md-subheader>
-	        <md-chips ng-model="selectedChannel.general" readonly="false">
-			      <md-chip-template md-contact-image="{{ $chip.poster }}">
-			        <strong>{{$chip.type}}</strong>
-			        <strong>{{$chip.name}}</strong>
-				      <strong>{{$chip.rated}}</strong>
-				      <strong>{{$chip.rating}}</strong>
-			        <strong>{{$chip.genre}}</strong>
-			      </md-chip-template>
-			    </md-chips>
-			    <md-contact-chips
-		        ng-model="selectedChannel.specific"
-		        md-contact-name="name"
-		        md-contact-image="poster"
-		        readonly="false">
-		    </md-contact-chips>
+	        <section class="flex-scroll">
+		        <md-chips ng-model="selectedChannel.general" readonly="false">
+				      <md-chip-template md-contact-image="{{ $chip.poster }}">
+				        <strong>{{$chip.type}}</strong>
+				        <strong>{{$chip.name}}</strong>
+					      <strong>{{$chip.rated}}</strong>
+					      <strong>{{$chip.rating}}</strong>
+				        <strong>{{$chip.genre}}</strong>
+				      </md-chip-template>
+				    </md-chips>
+				    <md-contact-chips
+			        ng-model="selectedChannel.specific"
+			        md-contact-name="name"
+			        md-contact-image="poster"
+			        readonly="false">
+			      </md-contact-chips>
+		      </section>
 	      </md-card>
 	    </section>
 	    <section layout="row" flex layout-align="center center"> 

@@ -1,10 +1,20 @@
-angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope, $http, $window, $state, $location, mediaUtils)
+angular.module('blast').controller('CastHomeCtrl', function ($scope, $rootScope, $http, $window, $state, $location, mediaUtils, sender)
 {
   $scope.title = "MyTv Cast"
   $scope.play = function(){
     console.log($state)
     if ($rootScope.media && $rootScope.channels) {
-      $state.go('home-play')
+      $scope.$on('init', function () {
+        console.log("Navigating...")
+        $state.go('home-play')
+      })
+      if (sender.hasSession) {
+        console.log("Already has session!")
+        $state.go('home-play')
+      } else {
+        console.log("Finding Session...")
+        sender.launchApp()
+      }
     }
   }
   

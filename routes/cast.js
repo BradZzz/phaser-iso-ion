@@ -103,7 +103,11 @@ module.exports = function (app) {
     req.query = turnArray(req.query, 'specific')
     req.query = turnArray(req.query, 'general')
     
+    console.log(req.query)
+    
     var query = ('_id' in req.query ? { '_id' : mongoose.Types.ObjectId(req.query._id) } : { name : req.query.name })
+    
+    console.log(query)
     
     if (req.query) {
       Channel.findOneAndUpdate(query, req.query, {upsert:true}, function(err){

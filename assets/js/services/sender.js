@@ -415,6 +415,10 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  appendMessage('launch error');
 	}
 
+	this.hasSession = function(){
+	  return session != null;
+	}
+	
 	/**
 	 * stop app/session
 	 */

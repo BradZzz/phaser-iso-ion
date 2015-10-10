@@ -18,6 +18,11 @@
   .large { 
     height : 10em;
   }
+  .play-view {
+    margin-top: 4em;
+    margin-left: 2em;
+    margin-right: 2em;
+  }
   .display-image {
     display: flex;
     height: 25em;
@@ -45,9 +50,7 @@
 </style>
 <div class="fit section-gallery" layout-align="center center" layout-fill>
   <div layout="column" layout-fill>
-    <div flex offset="10" layout-margin layout-padding>
-    </div>
-    <section layout="row" offset="5" flex="80" layout-align="center center">
+    <section layout="row" flex layout-align="center center" class="play-view">
       <div layout="row" flex>
        <md-card flex layout="column">
          <div layout="row" flex>
@@ -55,6 +58,7 @@
 		       <section layout="row" flex="20" layout-align="end center">
 		         <md-button flex class="ion-forward md-raised md-cornered" ng-click="toggleItem('mediaView')"></md-button>
              <md-button flex class="md-raised md-cornered" ng-class="castClass()" ng-click="controls.toggleCast()"></md-button>
+             <md-button flex class="md-raised md-cornered ion-refresh" ng-click="controls.refreshCast()"></md-button>
              <md-button flex class="ion-close md-raised md-cornered" aria-label="Close" ng-click="close()"></md-button>
 			     </section>
 	       </div>
@@ -131,9 +135,8 @@
 	          <md-subheader class="md-no-sticky">Volume</md-subheader>
 	          <md-slider flex min="0" max="100" ng-model="params.volume" ng-mouseup="controls.setVolume()"></md-slider>
 	          <md-subheader class="md-no-sticky">Options</md-subheader>
-	          <md-checkbox ng-model="params.sticky" class="md-padding">
-		          Sticky
-		        </md-checkbox>
+	          <md-checkbox ng-model="params.sticky" class="md-padding">Sticky</md-checkbox>
+	          <md-checkbox ng-model="params.newest" class="md-padding">Newest</md-checkbox>
 	        </md-card>
         </div>
       </div>

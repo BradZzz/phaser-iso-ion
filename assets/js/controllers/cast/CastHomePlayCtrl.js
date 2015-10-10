@@ -1,4 +1,4 @@
-angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $scope, $http, $window, $state, sender, flash)
+angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $scope, $http, $window, $state, sender, flash, mediaUtils)
 {
   sender.setup()
   $scope.channels = $rootScope.channels
@@ -25,6 +25,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       updateOffset : 0,
       mediaView: true,
       sticky : false,
+      newest : false,
       epNumber : function () {
         var ep = this.ep.slice(0,-1)
         var rEp = ep.split('/')
@@ -35,6 +36,32 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     init : function() {
       this.calculateOffset()
       this.updateParams()
+    },
+    refreshCast: function(){
+      //Update media cache
+      $http({
+        url: '/api/v1/cast/update', 
+        method: "GET",
+        headers: {
+          'Content-Type': 'json'
+        }
+      }).success(function(data) {
+        //Update media scope
+        $http({
+          url: '/api/v1/cast/get/media', 
+          method: "GET",
+          headers: {
+            'Content-Type': 'json'
+          }
+         }).success(function(data) {
+           $scope.safeApply(function () {
+             $rootScope.media = $scope.media = mediaUtils.formatMedia(data)
+           })
+           flash.success = "Media Updated!";
+        }).error(function(data) {
+          console.log('Error1: ' + data)
+        })
+      })
     },
     like : function() {
       var ep = $scope.params.media.type === 'movie' ? "" : $scope.params.ep.split("/")
@@ -148,7 +175,11 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         $scope.params.ep = media.path
         /* pick episode if tv picked */
         if (media.type === 'tv') {
-          $scope.params.ep = media.episodes[Math.floor((Math.random() * media.episodes.length))]
+          if ($scope.params.newest) {
+            $scope.params.ep = media.episodes[media.episodes.length-1]
+          } else {
+            $scope.params.ep = media.episodes[Math.floor((Math.random() * media.episodes.length))]
+          }
         }
       })
       console.log('media', media)
@@ -269,4 +300,6 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   $scope.close = function(){
     $state.go('home')
   }
+  
+  $scope.controls.init()
 })
