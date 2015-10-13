@@ -138,17 +138,17 @@ p {
 .section-main,
 .section-legal,
 .section-gallery {
-  background: #528edf;
-  background-image: -webkit-linear-gradient(to bottom, #4b62a8, #528edf);
-  background-image: -moz-linear-gradient(to bottom, #4b62a8, #528edf);
-  background-image: -o-linear-gradient(to bottom, #4b62a8, #528edf);
-  background-image: linear-gradient(to bottom, #4b62a8, #528edf);
+  background: #528EDF;
+  background-image: -webkit-linear-gradient(to bottom, #4B62A8, #528EDF);
+  background-image: -moz-linear-gradient(to bottom, #4B62A8, #528EDF);
+  background-image: -o-linear-gradient(to bottom, #4B62A8, #528EDF);
+  background-image: linear-gradient(to bottom, #4B62A8, #528EDF);
 }
 .section-faq {
-  background-image: -webkit-linear-gradient(to bottom, #528edf, #4b62a8);
-  background-image: -moz-linear-gradient(to bottom, #528edf, #4b62a8);
-  background-image: -o-linear-gradient(to bottom, #528edf, #4b62a8);
-  background-image: linear-gradient(to bottom, #528edf, #4b62a8);
+  background-image: -webkit-linear-gradient(to bottom, #528EDF, #4B62A8);
+  background-image: -moz-linear-gradient(to bottom, #528EDF, #4B62A8);
+  background-image: -o-linear-gradient(to bottom, #528EDF, #4B62A8);
+  background-image: linear-gradient(to bottom, #528EDF, #4B62A8);
 }
 .section-faq .qa {
   margin-top: 1em;

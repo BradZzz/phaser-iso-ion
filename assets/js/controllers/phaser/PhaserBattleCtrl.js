@@ -358,7 +358,7 @@ game.state.start('Boot');
     
     console.log(x,y,sprite)
 
-      // Creste the player
+      // Create the player
       player = game.add.isoSprite(x, y, 0, sprite, 0);
       
       console.log("here!")
@@ -419,40 +419,18 @@ game.state.start('Boot');
 	if (difX < playerPos.range && difY > playerPos.range) {
 		playerPos.moving = false
 	}else {
-    	/*if (difX > playerPos.range){
-    	  if (player.isoX < playerPos.position.x) {
-    		  player.body.velocity.x = speed;
-              player.body.velocity.y = -speed;
-    	  } else {
-    		  player.body.velocity.x = -speed;
-              player.body.velocity.y = speed;
-    	  }
-    	} 
-    	if (difY > playerPos.range){
-    	  if (player.isoY < playerPos.position.y) {
-    		  player.body.velocity.y = speed;
-              player.body.velocity.x = speed;
-    	  } else {
-    		  player.body.velocity.y = -speed;
-              player.body.velocity.x = -speed;
-    	  }
-    	}*/
 		if (difX > playerPos.range){
     	  if (player.isoX < playerPos.position.x) {
     		  player.body.velocity.x = speed;
-              //player.body.velocity.y = -speed;
     	  } else {
     		  player.body.velocity.x = -speed;
-              //player.body.velocity.y = speed;
     	  }
     	} 
     	if (difY > playerPos.range){
     	  if (player.isoY < playerPos.position.y) {
     		  player.body.velocity.y = speed;
-              //player.body.velocity.x = speed;
     	  } else {
     		  player.body.velocity.y = -speed;
-              //player.body.velocity.x = -speed;
     	  }
     	}
     	  
