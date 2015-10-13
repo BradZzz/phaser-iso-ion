@@ -389,11 +389,11 @@ angular.module('blast').controller('PhaserAdventureCtrl', function ()
           
           // create a mine object which will be our ending point in the game
           var mine = game.add.isoSprite(800, 100, 0, 'mine', 0, obstacleGroup);
-            mine.anchor.set(0.5);
-            
-            game.physics.isoArcade.enable(mine);
-            mine.body.collideWorldBounds = true;
-            mine.body.immovable = true;
+          mine.anchor.set(0.5);
+          
+          game.physics.isoArcade.enable(mine);
+          mine.body.collideWorldBounds = true;
+          mine.body.immovable = true;
           
           
           // create the exit marker next to the mine object
@@ -413,16 +413,16 @@ angular.module('blast').controller('PhaserAdventureCtrl', function ()
           createMoveables()
           
           // create the collected item text
-           itemsTxt = game.add.text(100, 8, txt, {
+          itemsTxt = game.add.text(100, 8, txt, {
               font: "16px Arial",
               fill: "#FFFFFF",
               align: "center"
           });
            
-           itemsTxt.fixedToCamera = true;
+          itemsTxt.fixedToCamera = true;
            
-        // create the information text field about the status of the game   
-           endTxt = game.add.text(0, 8, finalTxt, {
+          // create the information text field about the status of the game   
+          endTxt = game.add.text(0, 8, finalTxt, {
               font: "18px Arial",
               fill: "#FFFF00",
               align: "center"

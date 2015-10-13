@@ -1,4 +1,4 @@
-angular.module('blast').controller('PhaserBattleCtrl', function (map)
+angular.module('blast').controller('PhaserBattleCtrl', function (mapBattle)
 {
   /*
    * What needs to be done:
@@ -92,14 +92,23 @@ game.state.add('Boot', BasicGame.Boot);
 game.state.start('Boot');
     */
   
-  var width = window.innerWidth;
-  var height = window.innerHeight;
+  var controls = {
+      preventDbl : false,
+  }
+  
+  var dims = {
+      width : window.innerWidth,
+      height : window.innerHeight,
+  }
+  
   var cursorPos
   var playerPos = {}
   var tween
+  var floor = mapBattle
 
   var fluids = []
-  var obstacleGroup, player
+  var obstacleGroup, player, charGroup
+  var playerTile
   var marker, marker2, marker3, marker4, marker5, itemGroup;
   var items;
   var floorGroup;
@@ -120,12 +129,14 @@ game.state.start('Boot');
       return (someNumber % 2 == 0) ? true : false;
   };
   
-  var game = new Phaser.Game(width, height, Phaser.AUTO, 'game-canvas', null, false, true);
+  var game = new Phaser.Game(dims.width, dims.height, Phaser.AUTO, 'game-canvas', null, false, true);
   
   var BasicGame = function (game) { };
 
   BasicGame.Boot = function (game) { };
 
+  console.log('init')
+  
   BasicGame.Boot.prototype =
   {
       preload: function () {
@@ -165,16 +176,16 @@ game.state.start('Boot');
           playerPos.moving = false
       },
       create: function () {
-          
         // set the Background color of our game
         //game.stage.backgroundColor = "0xde6712";
         game.stage.backgroundColor = "0xffffff";
         
         // create groups for different tiles
-        floorGroup = game.add.group();
-        itemGroup = game.add.group();
-        grassGroup = game.add.group();
-        obstacleGroup = game.add.group();
+        floorGroup = game.add.group()
+        itemGroup = game.add.group()
+        grassGroup = game.add.group()
+        obstacleGroup = game.add.group()
+        charGroup = game.add.group()
         
         this.cursors = game.input.keyboard.createCursorKeys();
         
@@ -225,7 +236,7 @@ game.state.start('Boot');
           
            endTxt.fixedToCamera = true;       
            endTxt.anchor.x = Math.round(endTxt.width * 0.5) / endTxt.width;
-           endTxt.cameraOffset.x = (width/3) * 2;
+           endTxt.cameraOffset.x = (dims.width/3) * 2;
            
         // update both text fields
            updateText();
@@ -329,7 +340,6 @@ game.state.start('Boot');
           
       },
       render: function () {
-        
       }
   };
 
@@ -356,44 +366,41 @@ game.state.start('Boot');
   
   function createPlayer (x, y, sprite) {
     
-    console.log(x,y,sprite)
+      console.log(x,y,sprite)
 
       // Create the player
-      player = game.add.isoSprite(x, y, 0, sprite, 0);
-      
-      console.log("here!")
+      var player = game.add.isoSprite(x, y, 0, sprite, 0, charGroup)
 
-      player.alpha = 0.9;
+      player.alpha = 0.9
               
       // add the animations from the spritesheet
-      player.animations.add('S', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
-      player.animations.add('SW', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
-      player.animations.add('W', [16, 17, 18, 19, 20, 21, 22, 23], 10, true);
-      player.animations.add('NW', [24, 25, 26, 27, 28, 29, 30, 31], 10, true);
-      player.animations.add('N', [32, 33, 34, 35, 36, 37, 38, 39], 10, true);
-      player.animations.add('NE', [40, 41, 42, 43, 44, 45, 46, 47], 10, true);
-      player.animations.add('E', [48, 49, 50, 51, 52, 53, 54, 55], 10, true);
-      player.animations.add('SE', [56, 57, 58, 59, 60, 61, 62, 63], 10, true);
+      player.animations.add('S', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
+      player.animations.add('SW', [8, 9, 10, 11, 12, 13, 14, 15], 10, true)
+      player.animations.add('W', [16, 17, 18, 19, 20, 21, 22, 23], 10, true)
+      player.animations.add('NW', [24, 25, 26, 27, 28, 29, 30, 31], 10, true)
+      player.animations.add('N', [32, 33, 34, 35, 36, 37, 38, 39], 10, true)
+      player.animations.add('NE', [40, 41, 42, 43, 44, 45, 46, 47], 10, true)
+      player.animations.add('E', [48, 49, 50, 51, 52, 53, 54, 55], 10, true)
+      player.animations.add('SE', [56, 57, 58, 59, 60, 61, 62, 63], 10, true)
        
-      player.anchor.set(0.5);
+      player.anchor.set(0.5)
       
       // enable physics on the player
-      game.physics.isoArcade.enable(player);
+      game.physics.isoArcade.enable(player)
       //game.physics.arcade.enable(player, Phaser.Physics.ARCADE)
       player.body.enable = false
 
-      player.body.collideWorldBounds = true;
+      player.body.collideWorldBounds = true
 
-      game.camera.follow(player);
-      
-      console.log(player)      
+      game.camera.follow(player)   
 
-      var space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+      var space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
       space.onDown.add(function () {
-        player.body.velocity.z = 300;
-      }, this);
+        player.body.velocity.z = 300
+      }, this)
       
-      player.animations.play('S');
+      player.animations.play('S')
+      return player
   }
 
   function checkClick() {
@@ -420,20 +427,19 @@ game.state.start('Boot');
 		playerPos.moving = false
 	}else {
 		if (difX > playerPos.range){
-    	  if (player.isoX < playerPos.position.x) {
-    		  player.body.velocity.x = speed;
-    	  } else {
-    		  player.body.velocity.x = -speed;
-    	  }
-    	} 
-    	if (difY > playerPos.range){
-    	  if (player.isoY < playerPos.position.y) {
-    		  player.body.velocity.y = speed;
-    	  } else {
-    		  player.body.velocity.y = -speed;
-    	  }
-    	}
-    	  
+		  if (player.isoX < playerPos.position.x) {
+			  player.body.velocity.x = speed;
+		  } else {
+			  player.body.velocity.x = -speed;
+		  }
+		} 
+		if (difY > playerPos.range){
+		  if (player.isoY < playerPos.position.y) {
+			  player.body.velocity.y = speed;
+		  } else {
+			  player.body.velocity.y = -speed;
+		  }
+		}  
 	}
   }
   
@@ -461,30 +467,27 @@ game.state.start('Boot');
   }
   
   function createFloor(){
-    var floor = map
-    var floorTile;
-    var dim = 35
+    var floorTile
+    var dim = floor.dim
     for (var xt = floor.world.map.length-1; xt >= 0; xt -= 1) {
         for (var yt = floor.world.map[0].length-1; yt >= 0; yt -= 1) {
           floorTile = game.add.isoSprite(xt * dim, yt * dim, 0, floor.world.map[xt][yt].floor, 0, floorGroup);
           floorTile.anchor.set(0.5);
-          if (floor.world.map[xt][yt].player){
+          if (floor.world.map[xt][yt].top.type === 'char'){
             console.log("Player created")
-            createPlayer((xt - 1) * dim,(yt - 1) * dim,floor.world.map[xt][yt].player[0])
+            floorTile.topL = createPlayer((xt - 1) * dim,(yt - 1) * dim,floor.world.map[xt][yt].top.image)
+            playerTile = floorTile
+            player = playerTile.topL
+          } else {
+            floorTile.topL = 0
           }
         }
     }
-    game.iso.simpleSort(floorGroup);
-      /*for (var xt = 1024; xt > 0; xt -= 35) {
-          for (var yt = 1024; yt > 0; yt -= 35) {
-            floorTile = game.add.isoSprite(xt, yt, 0, 'tile', 0, floorGroup);
-            floorTile.anchor.set(0.5);
-          }
-      }
-      game.iso.simpleSort(floorGroup);*/
+    game.iso.simpleSort(floorGroup)
+    game.iso.simpleSort(charGroup)
   }
   
-  function stopTweensFor(obj) {
+  /*function stopTweensFor(obj) {
       // first get all of the active tweens
       var tweens = game.tweens.getAll();
     
@@ -499,38 +502,51 @@ game.state.start('Boot');
           currentTweens[t].stop();
         }
       }
-    }
-
+    }*/
+  
   function checkCursor (cursorPos) {
-	// Update the cursor position.
+    // Update the cursor position.
     // It's important to understand that screen-to-isometric projection means you have to specify a z position manually, as this cannot be easily
     // determined from the 2D pointer position without extra trickery. By default, the z position is 0 if not set.
-    //game.iso.unproject(game.input.activePointer.position, cursorPos);
 
     // Loop through all tiles and test to see if the 3D position from above intersects with the automatically generated IsoSprite tile bounds.
     floorGroup.forEach(function (tile) {
         var inBounds = tile.isoBounds.containsXY(cursorPos.x, cursorPos.y);
         // If it does, do a little animation and tint change.
         if (!tile.selected && inBounds) {
-            tile.selected = true;
-            tile.tint = 0x86bfda;
-            game.add.tween(tile).to({ isoZ: 4 }, 200, Phaser.Easing.Quadratic.InOut, true);
-            
+            tile.selected = true
+            if (tile.topL) {
+              tile.tint = 0xFF7070
+            } else {
+              tile.tint = 0x86bfda 
+            }
+            game.add.tween(tile).to({ isoZ: 4 }, 200, Phaser.Easing.Quadratic.InOut, true) 
         }
         // If not, revert back to how it was.
         else if (tile.selected) {
         	if (!inBounds) {
-                tile.selected = false;
-                tile.tint = 0xffffff;
-                game.add.tween(tile).to({ isoZ: 0 }, 200, Phaser.Easing.Quadratic.InOut, true);
+                tile.selected = false
+                tile.tint = 0xffffff
+                game.add.tween(tile).to({ isoZ: 0 }, 200, Phaser.Easing.Quadratic.InOut, true)
             } else {
-                if (game.input.activePointer.isDown)
+                if (!controls.preventDbl && game.input.activePointer.isDown)
                 {
                 	if (tween === null || !tween.isRunning) {
-                	  	console.log(tile)
-                    	tween = game.add.tween(player).to({ isoX: tile.isoX - ((4*tile.width) / 10), isoY: tile.isoY - ( (7*tile.height) / 10) }, 1000, Phaser.Easing.Linear.None, true);
-                    	tween.onComplete.add(function(){
-                    	}, this);
+                  	  if (tile.topL) {
+                  	    playerTile = tile
+                        player = playerTile.topL
+                        game.camera.follow(player)
+                        controls.preventDbl = true
+                        game.time.events.add(1000,function(){ controls.preventDbl = false},this)
+                  	  } else {
+                      	tween = game.add.tween(player).to({ isoX: tile.isoX - ((4*tile.width) / 10), isoY: tile.isoY - ( (7*tile.height) / 10) }, 1000, Phaser.Easing.Linear.None, true);
+                      	tween.onComplete.add(function(){
+                      	  game.iso.simpleSort(charGroup)
+                      	}, this);
+                        playerTile.topL = 0
+                        playerTile = tile
+                        playerTile.topL = player
+                  	  }
                     }
                 }
             }
