@@ -46,7 +46,6 @@
   md-button:hover {
     background-color: rgba(0, 153, 51, 1);
   }
-
 </style>
 <div class="fit section-gallery" layout-align="center center" layout-fill>
   <div layout="column" layout-fill>
@@ -137,6 +136,7 @@
 	          <md-subheader class="md-no-sticky">Options</md-subheader>
 	          <md-checkbox ng-model="params.sticky" class="md-padding">Sticky</md-checkbox>
 	          <md-checkbox ng-model="params.newest" class="md-padding">Newest</md-checkbox>
+	          <md-checkbox ng-model="params.ordered" ng-click="controls.ordered()" class="md-padding">Ordered</md-checkbox>
 	        </md-card>
         </div>
       </div>

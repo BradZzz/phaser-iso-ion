@@ -20,12 +20,14 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       ep : "",
       paused : true,
       casting : false,
+      prev : false,
       progress : 0,
       volume : 100,
       updateOffset : 0,
       mediaView: true,
       sticky : false,
       newest : false,
+      ordered : false,
       epNumber : function () {
         var ep = this.ep.slice(0,-1)
         var rEp = ep.split('/')
@@ -36,6 +38,13 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     init : function() {
       this.calculateOffset()
       this.updateParams()
+    },
+    ordered: function(){
+      //Models are set after clicks, so toggle here
+      if (!$scope.params.ordered) {
+        $scope.params.newest = false;
+        $scope.params.sticky = true;
+      }
     },
     refreshCast: function(){
       //Update media cache
@@ -109,11 +118,13 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     skipMedia : function()
     {
       console.log('forward')
+      $scope.params.prev = false
       this.loadMedia()
     },
     prevMedia : function()
     {
       console.log('backward')
+      $scope.params.prev = true
       this.loadMedia()
     },
     setVolume : function(){
@@ -185,10 +196,21 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       }
       $scope.safeApply(function () {
         $scope.params.media = media
+        var lPath = $scope.params.ep
         $scope.params.ep = media.path
         /* pick episode if tv picked */
         if (media.type === 'tv') {
-          if ($scope.params.newest) {
+          if ($scope.params.ordered) {
+            var index = media.episodes.indexOf(lPath);
+            if ($scope.params.prev) {
+              index -= 1
+              if (index < 0) {index = media.episodes.length-1}
+            } else {
+              index += 1
+              if (index > media.episodes.length-1) {index = 0}
+            }
+            $scope.params.ep = media.episodes[index]
+          }else if ($scope.params.newest) {
             $scope.params.ep = media.episodes[media.episodes.length-1]
           } else {
             $scope.params.ep = media.episodes[Math.floor((Math.random() * media.episodes.length))]
