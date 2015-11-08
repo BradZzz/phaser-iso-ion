@@ -36,8 +36,12 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
   //This is a copy of all the available media meta
   $scope.media = $rootScope.media
   for (var media in $scope.selectedChannel.specific){
-    $scope.selectedChannel.specific[media].name = $scope.media[$scope.selectedChannel.specific[media].id].name
-    $scope.selectedChannel.specific[media].poster = $scope.media[$scope.selectedChannel.specific[media].id].poster
+    if ($scope.selectedChannel.specific[media].id in $scope.media 
+        && 'name' in $scope.media[$scope.selectedChannel.specific[media].id]
+        && 'poster' in $scope.media[$scope.selectedChannel.specific[media].id]) {
+      $scope.selectedChannel.specific[media].name = $scope.media[$scope.selectedChannel.specific[media].id].name
+      $scope.selectedChannel.specific[media].poster = $scope.media[$scope.selectedChannel.specific[media].id].poster
+    }
   }
   console.log($scope.selectedChannel)
 
@@ -133,27 +137,27 @@ angular.module('blast').controller('CastHomeEditCtrl', function ($stateParams,$s
   }
   
   $scope.save = function(){
-    if ('$$hashKey' in $scope.selectedChannel) {
-      delete $scope.selectedChannel['$$hashKey']
-    }
-    for (var media in $scope.selectedChannel.specific){
-      if ('name' in $scope.selectedChannel.specific[media]) {
-        delete $scope.selectedChannel.specific[media]['name']
+    
+    var channel = angular.copy($scope.selectedChannel)
+    
+    for (var media in channel.specific){
+      if ('name' in channel.specific[media]) {
+        delete channel.specific[media]['name']
       }
-      if ('poster' in $scope.selectedChannel.specific[media]) {
-        delete $scope.selectedChannel.specific[media]['poster']
+      if ('poster' in channel.specific[media]) {
+        delete channel.specific[media]['poster']
       }
     }
     $http({
       url: '/api/v1/cast/post/channel',
       method: "POST",
-      params: $scope.selectedChannel,
+      params: channel,
       headers: {
         'Content-Type': 'application/json'
       }
     }).then(function(res) {
-      if (!_.findWhere($rootScope.channels, {name: $scope.selectedChannel.name})){
-        $rootScope.channels.push($scope.selectedChannel)
+      if (!_.findWhere($rootScope.channels, {name: channel.name})){
+        $rootScope.channels.push(channel)
       }
       $state.go('home-channel')
     }, function(err){

@@ -66,22 +66,33 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     like : function() {
       var ep = $scope.params.media.type === 'movie' ? "" : $scope.params.ep.split("/")
       $http({
-        url: '/api/v1/cast/post/like',
-        method: "POST",
-        params: {
-          'id'    : $scope.params.media.id,
-          'like'  : sender.getCTime(),
-          'ep'    : ep ? ep[ep.length-2] : "",
-          'token' : $rootScope.auth.token,
-        },
+        url: '/api/v1/user/validate',
+        method: "GET",
+        params: $rootScope.auth,
         headers: {
           'Content-Type': 'application/json'
         }
       }).then(function(res) {
-        flash.success = "Moment Liked!"
-      }, function (err){
-        console.log(err)
-        flash.error = "Error Liking Moment!"
+        $http({
+          url: '/api/v1/cast/post/like',
+          method: "POST",
+          params: {
+            'id'    : $scope.params.media.id,
+            'like'  : sender.getCTime(),
+            'ep'    : ep ? ep[ep.length-2] : "",
+            'token' : $rootScope.auth.token,
+          },
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function(res) {
+          flash.success = "Moment Liked!"
+        }, function (err){
+          console.log(err)
+          flash.error = "Error Liking Moment!"
+        })
+      }, function(err){
+        flash.error = "Error validating user"
       })
     },
     playMedia : function(){
@@ -152,10 +163,12 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         var tSelected = []
         var roll = Math.random()
         for (var file in specific) {
-          if (($scope.media[specific[file].id].type === 'tv' && roll <= $scope.sParams.tvOdds)) {
-            tSelected.push(specific[file])
-          } else if ($scope.media[specific[file].id].type === 'movie' && roll > $scope.sParams.tvOdds) {
-            tSelected.push(specific[file])
+          if (specific[file].id in $scope.media && 'type' in $scope.media[specific[file].id]) {
+            if (($scope.media[specific[file].id].type === 'tv' && roll <= $scope.sParams.tvOdds)) {
+              tSelected.push(specific[file])
+            } else if ($scope.media[specific[file].id].type === 'movie' && roll > $scope.sParams.tvOdds) {
+              tSelected.push(specific[file])
+            }
           }
         }
         if (tSelected.length === 0) {
@@ -221,18 +234,21 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       console.log($scope.params)
     },
     saveChannelOffset: function(){
-      $scope.channels[$scope.params.position].lastId = $scope.params.media.id
-      $scope.channels[$scope.params.position].lastEp = $scope.params.media.type === 'tv' ?  $scope.params.ep : ""
-      $scope.channels[$scope.params.position].lastMediaCurrent = sender.mediaPosition().current ? sender.mediaPosition().current : 0
-      $scope.channels[$scope.params.position].lastMediaDuration = sender.mediaPosition().duration ? sender.mediaPosition().duration : 0
-      $scope.channels[$scope.params.position].lastOffset = moment().format($scope.sParams.dateFormat)
+      
+      var channel = angular.copy($scope.channels[$scope.params.position])
+      
+      channel.lastId = $scope.params.media.id
+      channel.lastEp = $scope.params.media.type === 'tv' ?  $scope.params.ep : ""
+      channel.lastMediaCurrent = sender.mediaPosition().current ? sender.mediaPosition().current : 0
+      channel.lastMediaDuration = sender.mediaPosition().duration ? sender.mediaPosition().duration : 0
+      channel.lastOffset = moment().format($scope.sParams.dateFormat)
       
       console.log(sender.mediaPosition())
       
       $http({
         url: '/api/v1/cast/post/channel',
         method: "POST",
-        params: $scope.channels[$scope.params.position],
+        params: channel,
         headers: {
           'Content-Type': 'application/json'
         }

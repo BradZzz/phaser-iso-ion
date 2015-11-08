@@ -100,16 +100,14 @@ app.run(function ($rootScope, $location, $http, flash, auth, $window) {
           'Content-Type': 'application/json'
         }
       }).then(function(res) {
-        if (res.status === 200) {
-          if ('access' in toState && res.data.role < toState.access) {
-            flash.error = "Cannot access elevated content"
-            $state.go(fromState.name)
-          }
-        } else {
-          flash.error = "Error creating user"
+        if ('access' in toState && res.data.role < toState.access) {
+          flash.error = "Cannot access elevated content"
+          $state.go(fromState.name)
+        }
+      }, function(err){
+        flash.error = "Error creating user"
           console.log(res)
           $location.path('/login')
-        }
       })
     }
   })
