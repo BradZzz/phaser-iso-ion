@@ -330,7 +330,7 @@ onload = function() {
       mediaPlayer.enableCaptions(false);
       mediaPlayer.enableCaptions(true, 'ttml', 'captions.ttml');
     } else if (payload['type'] === 'live') {
-    mediaManager.onGetStatus(event);
+      mediaManager.onGetStatus(event);
       if (payload['value'] === true) {
         liveStreaming = true;
       } else {

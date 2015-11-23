@@ -576,6 +576,12 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  }
 	}
 
+	this.clearTimerInterval = function(){
+	  if (timer) {
+      clearInterval(timer);
+    }
+	}
+	
 	/**
 	 * play media
 	 * @this playMedia
@@ -864,9 +870,7 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  var request = new chrome.cast.media.SeekRequest();
 	  request.currentTime = pos * currentMedia.media.duration / 100;
 	  request.resumeState = chrome.cast.media.PlayerState.PLAYBACK_START;
-	  currentMedia.seek(request,
-	    onSeekSuccess.bind(this, 'media seek done'),
-	    onError);
+	  currentMedia.seek(request,onSeekSuccess.bind(this, 'media seek done'),onError);
 
 	  code = '  currentMedia.seek(SeekRequest, success, error);\n';
 	  showCodeSnippet(code, 'sender');
@@ -912,8 +916,7 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  if (currentMedia.media) {
 	    var cTime = currentMedia.getEstimatedTime()
 	    $rootScope.$broadcast('progress', parseInt(100 * cTime / currentMedia.media.duration))
-	  }
-	  else {
+	  } else {
 	    $rootScope.$broadcast('progress', 0)
 	    if (timer) {
 	      clearInterval(timer);

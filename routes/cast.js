@@ -13,6 +13,12 @@ String.prototype.capitalize = function() {
 }
 
 module.exports = function (app) {
+
+  app.get('/login', function(req, res) {
+
+      // render the page and pass in any flash data if it exists
+      res.render('login.ejs', { message: req.flash('loginMessage') }); 
+  });
   
   //Get methods
   app.get('/api/v1/cast/get/media', function (req, res) {

@@ -276,19 +276,25 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         }
       }).then(function(res) {
         console.log('Channel Offset Saved!')
+        console.log(res)
       }, function(err){
         console.log('Error Saving Channel Offset')
+        console.log(err)
       })
     }
   }
   
   /*Listeners*/
+  //Check to see if you can queue media in a videoview
   $scope.$on('update', function (scope, media) {
     if (media.playerState === "PLAYING" && $scope.params.updateOffset && $scope.params.updateOffset > 0) {
       var mLength = sender.mediaPosition().duration
       sender.seekMedia( 100 * (($scope.params.updateOffset % mLength) / mLength))
       $scope.params.updateOffset = 0
       $scope.controls.saveChannelOffset()
+    } else if (media.playerState === "PLAYING") {
+      //Clear the UI objects if we aren't trying to update
+      sender.clearTimerInterval();
     }
   })
   $scope.$on('retry', function () {
