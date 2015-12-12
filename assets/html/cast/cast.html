@@ -297,11 +297,11 @@ body {
 	       </div>
           <div class="inputContainer">
             <label>Volume</label>
-            <div><input class="volume_holder" type="range" min="0" max="100" step="1" ng-model="volume" ng-mouseup="setReceiverVolume();"></div>
+            <div><input id="volume" class="volume_holder" type="range" min="0" max="100" step="1" ng-model="params.volume" ng-mouseup="setReceiverVolume();"></div>
           </div>
           <div class="inputContainer">
 			       <label>Progress</label>
-			       <div><input id="progress" type="range" min="1" max="100" value="1" step="1" ng-model="seek" ng-mouseup="seekMedia();"></div>
+			       <div><input id="progress" type="range" min="1" max="100" value="1" step="1" ng-model="params.progress" ng-mouseup="seekMedia();"></div>
 			     </div>
 	       </div>
 	       <div style="font-size: large; border-bottom: none !important; padding: 10px 20px 10px 20px; height: 100px; overflow-y: auto; display: inline-block; border: 1px solid white; width:100%; cursor:default;" class="div_border">{{ curMedia.Summary }}</div>

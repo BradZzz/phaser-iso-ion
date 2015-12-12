@@ -114,7 +114,10 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       $scope.params.paused = !$scope.params.paused
     },
     //stopMedia : function(){sender.stopMedia()},
-    seekMedia : function(){sender.seekMedia($scope.params.progress)},
+    seekMedia : function(){
+      sender.seekMedia($scope.params.progress)
+      $('#progress').focusout()
+    },
     skipMedia : function()
     {
       console.log('forward')
@@ -129,6 +132,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     },
     setVolume : function(){
       sender.setReceiverVolume($scope.params.volume / 100, false)
+      $('#volume').focusout()
     },
     chanUp : function(){
       this.saveChannelOffset()
@@ -303,7 +307,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     }
   })
   $scope.$on('progress', function (scope, progress) {
-    //console.log('progress: ',progress)
+    console.log('progress: ',progress)
     $scope.safeApply(function () {
       $scope.params.progress = progress
     })
