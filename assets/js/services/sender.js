@@ -861,11 +861,10 @@ angular.module('blast').service('sender', function ($rootScope) {
 	this.seekMedia = function(pos) {
 	  
 	  if (timer) {
-      clearInterval(timer);
-    }
+      	clearInterval(timer);
+      }
 	  
-	  console.log('Seeking ' + currentMedia.sessionId + ':' +
-	    currentMedia.mediaSessionId + ' to ' + pos + '%');
+	  console.log('Seeking ' + currentMedia.sessionId + ':' + currentMedia.mediaSessionId + ' to ' + pos + '%');
 	  progressFlag = 0;
 	  var request = new chrome.cast.media.SeekRequest();
 	  request.currentTime = pos * currentMedia.media.duration / 100;
