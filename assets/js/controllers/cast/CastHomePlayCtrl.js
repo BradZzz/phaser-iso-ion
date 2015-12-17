@@ -169,7 +169,6 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       $scope.params.cName = $scope.channels[$scope.params.position].name
     },
     pickEp : function(picked){
-      console.log(picked)
       /* pick media */
       var specific = $scope.channels[$scope.params.position].specific
       console.log('specific')
@@ -296,14 +295,14 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       var mLength = sender.mediaPosition().duration
       sender.seekMedia( 100 * (($scope.params.updateOffset % mLength) / mLength))
       $scope.params.updateOffset = 0
-      $scope.controls.saveChannelOffset()
+      //$scope.controls.saveChannelOffset()
     } /*else if (media.playerState === "PLAYING") {
       //Clear the UI objects if we aren't trying to update
       sender.clearTimerInterval();
-    }*/ else if ($scope.params.interrupted) {
+    }*/ else if (media.playerState === "PLAYING" && $scope.params.interrupted) {
       //Somewhere between 20% and 80% skip
+      $scope.params.interrupted = false
       sender.seekMedia( 20 + Math.floor($scope.params.roll * 60) )
-      $scope.controls.saveChannelOffset()
     }
   })
   $scope.$on('retry', function () {
