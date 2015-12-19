@@ -13,6 +13,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       dateFormat : "YYYY-MM-DD HH:mm:ss",
       tvOdds: .9, //The odds of picking a tv show as opposed to a movie
   }
+  
   $scope.params = {
       position : 0,
       cName : $scope.channels[0].name,
@@ -29,7 +30,6 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       newest : false,
       ordered : false,
       interrupted: false,
-      roll: Math.random(),
       epNumber : function () {
         var ep = this.ep.slice(0,-1)
         var rEp = ep.split('/')
@@ -170,6 +170,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     },
     pickEp : function(picked){
       /* pick media */
+      var roll = Math.random()
       var specific = $scope.channels[$scope.params.position].specific
       console.log('specific')
       console.log(specific)
@@ -179,9 +180,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         var tSelected = []
         for (var file in specific) {
           if (specific[file].id in $scope.media && 'type' in $scope.media[specific[file].id]) {
-            if (($scope.media[specific[file].id].type === 'tv' && $scope.params.roll <= $scope.sParams.tvOdds)) {
+            if (($scope.media[specific[file].id].type === 'tv' && roll <= $scope.sParams.tvOdds)) {
               tSelected.push(specific[file])
-            } else if ($scope.media[specific[file].id].type === 'movie' && $scope.params.roll > $scope.sParams.tvOdds) {
+            } else if ($scope.media[specific[file].id].type === 'movie' && roll > $scope.sParams.tvOdds) {
               tSelected.push(specific[file])
             }
           }
@@ -192,11 +193,13 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         console.log('picked',tSelected)
         //If the media is not picked, make sure that the media playing before isnt the media playing now
         console.log($scope.params.media)
-        var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[Math.floor($scope.params.roll * tSelected.length)].id
+        var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[Math.floor(roll * tSelected.length)].id
         while (!$scope.params.sticky && mId === $scope.params.media.id && tSelected.length > 1) {
-          mId = tSelected[Math.floor(($scope.params.roll * tSelected.length))].id
+          mId = tSelected[Math.floor((roll * tSelected.length))].id
         }
         var media = $scope.media[mId]
+        console.log('media!')
+        console.log(media)
       }
       $scope.safeApply(function () {
         $scope.params.media = media
@@ -217,7 +220,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
           }else if ($scope.params.newest) {
             $scope.params.ep = media.episodes[media.episodes.length-1]
           } else {
-            $scope.params.ep = media.episodes[Math.floor(($scope.params.roll * media.episodes.length))]
+            $scope.params.ep = media.episodes[Math.floor((roll * media.episodes.length))]
           }
         }
       })
@@ -301,8 +304,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       sender.clearTimerInterval();
     }*/ else if (media.playerState === "PLAYING" && $scope.params.interrupted) {
       //Somewhere between 20% and 80% skip
+      console.log('skip!!!')
       $scope.params.interrupted = false
-      sender.seekMedia( 20 + Math.floor($scope.params.roll * 60) )
+      sender.seekMedia( 50 )
     }
   })
   $scope.$on('retry', function () {
