@@ -306,7 +306,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       //Somewhere between 20% and 80% skip
       console.log('skip!!!')
       $scope.params.interrupted = false
-      sender.seekMedia( 50 )
+      sender.seekMedia( 20 + Math.floor($scope.params.roll * 60) )
     }
   })
   $scope.$on('retry', function () {
