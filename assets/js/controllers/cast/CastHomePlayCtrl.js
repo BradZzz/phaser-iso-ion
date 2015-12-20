@@ -304,9 +304,10 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       sender.clearTimerInterval();
     }*/ else if (media.playerState === "PLAYING" && $scope.params.interrupted) {
       //Somewhere between 20% and 80% skip
+      var roll = Math.random()
       console.log('skip!!!')
       $scope.params.interrupted = false
-      sender.seekMedia( 20 + Math.floor($scope.params.roll * 60) )
+      sender.seekMedia( 20 + Math.floor(roll * 60) )
     }
   })
   $scope.$on('retry', function () {
