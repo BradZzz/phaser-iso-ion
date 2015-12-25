@@ -891,6 +891,7 @@ angular.module('blast').service('sender', function ($rootScope) {
 	  console.log(info)
 	  setTimeout(function() {
 	    progressFlag = 1
+	    updateCurrentTime()
 	    timer = setInterval(updateCurrentTime, PROGRESS_BAR_UPDATE_DELAY)
 	  },2000)
 	}
@@ -912,14 +913,16 @@ angular.module('blast').service('sender', function ($rootScope) {
 	    return;
 	  }
 	  
-	  if (currentMedia.media) {
-	    var cTime = currentMedia.getEstimatedTime()
-	    $rootScope.$broadcast('progress', parseInt(100 * cTime / currentMedia.media.duration))
-	  } else {
-	    $rootScope.$broadcast('progress', 0)
-	    if (timer) {
-	      clearInterval(timer);
-	    }
+	  if (progressFlag === 1){
+  	  if (currentMedia.media) {
+  	    var cTime = currentMedia.getEstimatedTime()
+  	    $rootScope.$broadcast('progress', parseInt(100 * cTime / currentMedia.media.duration))
+  	  } else {
+  	    $rootScope.$broadcast('progress', 0)
+  	    if (timer) {
+  	      clearInterval(timer);
+  	    }
+  	  }
 	  }
 	}
 	
