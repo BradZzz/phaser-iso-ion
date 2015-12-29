@@ -195,6 +195,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         console.log($scope.params.media)
         var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[Math.floor(roll * tSelected.length)].id
         while (!$scope.params.sticky && mId === $scope.params.media.id && tSelected.length > 1) {
+          roll = Math.random()
           mId = tSelected[Math.floor((roll * tSelected.length))].id
         }
         var media = $scope.media[mId]
