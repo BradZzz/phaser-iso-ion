@@ -299,7 +299,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       var mLength = sender.mediaPosition().duration
       sender.seekMedia( 100 * (($scope.params.updateOffset % mLength) / mLength))
       $scope.params.updateOffset = 0
-      //$scope.controls.saveChannelOffset()
+      $scope.controls.saveChannelOffset()
     } /*else if (media.playerState === "PLAYING") {
       //Clear the UI objects if we aren't trying to update
       sender.clearTimerInterval();

@@ -26,11 +26,11 @@ module.exports = function (app) {
     var deferred = Q.defer()
     //The user object should contain an email, role, and an associated token
     app.storage.getItem(user.token, function (err, value) {
-     if (value && user.auth === value.email && moment(new moment().format()).isAfter(value.expires)) {
-       console.log(user)
-       console.log(value)
+     if (value && user.auth === value.email /*&& moment(new moment().format()).isAfter(value.expires)*/) {
+       //console.log(user)
+       //console.log(value)
        //refresh token
-       app.storage.removeItem(user.token, function(err){
+       /*app.storage.removeItem(user.token, function(err){
          if (err) {
            deferred.reject('error refreshing token')
          }
@@ -39,6 +39,11 @@ module.exports = function (app) {
            token : generateToken(value),
            role : user.role
          })
+       })*/
+       deferred.resolve({
+         auth : user.auth,
+         token : generateToken(value),
+         role : user.role
        })
      } else {
        deferred.reject('invalid token')
