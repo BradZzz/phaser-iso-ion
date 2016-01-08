@@ -18,6 +18,8 @@
     "event-stream": "^3.3.1",
     "express": "^4.4.0",
     "express-handlebars": "^1.1.0",
+    "ffmpeg": "0.0.4",
+    "fs": "0.0.2",
     "giphy-wrapper": "git://github.com/ptte/node-giphy",
     "gulp": "^3.6.2",
     "gulp-bower-files": "^0.2.1",
