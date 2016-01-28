@@ -170,7 +170,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     },
     pickEp : function(picked){
       /* pick media */
-      var roll = Math.random()
+      var roll = chance.integer({min: 0, max: 100})
       var specific = $scope.channels[$scope.params.position].specific
       console.log('specific')
       console.log(specific)
@@ -180,9 +180,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         var tSelected = []
         for (var file in specific) {
           if (specific[file].id in $scope.media && 'type' in $scope.media[specific[file].id]) {
-            if (($scope.media[specific[file].id].type === 'tv' && roll <= $scope.sParams.tvOdds)) {
+            if (($scope.media[specific[file].id].type === 'tv' && roll <= $scope.sParams.tvOdds * 100)) {
               tSelected.push(specific[file])
-            } else if ($scope.media[specific[file].id].type === 'movie' && roll > $scope.sParams.tvOdds) {
+            } else if ($scope.media[specific[file].id].type === 'movie' && roll > $scope.sParams.tvOdds * 100) {
               tSelected.push(specific[file])
             }
           }
@@ -193,10 +193,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         console.log('picked',tSelected)
         //If the media is not picked, make sure that the media playing before isnt the media playing now
         console.log($scope.params.media)
-        var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[Math.floor(roll * tSelected.length)].id
+        var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[chance.integer({min: 0, max: tSelected.length})].id
         while (!$scope.params.sticky && mId === $scope.params.media.id && tSelected.length > 1) {
-          roll = Math.random()
-          mId = tSelected[Math.floor((roll * tSelected.length))].id
+          mId = tSelected[chance.integer({min: 0, max: tSelected.length})].id
         }
         var media = $scope.media[mId]
         console.log('media!')
@@ -221,7 +220,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
           }else if ($scope.params.newest) {
             $scope.params.ep = media.episodes[media.episodes.length-1]
           } else {
-            $scope.params.ep = media.episodes[Math.floor((roll * media.episodes.length))]
+            $scope.params.ep = media.episodes[chance.integer({min: 0, max: media.episodes.length})]
           }
         }
       })
@@ -305,10 +304,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       sender.clearTimerInterval();
     }*/ else if (media.playerState === "PLAYING" && $scope.params.interrupted) {
       //Somewhere between 20% and 80% skip
-      var roll = Math.random()
       console.log('skip!!!')
       $scope.params.interrupted = false
-      sender.seekMedia( 20 + Math.floor(roll * 60) )
+      sender.seekMedia( 20 + chance.integer({min: 0, max: 60}))
     }
   })
   $scope.$on('retry', function () {
