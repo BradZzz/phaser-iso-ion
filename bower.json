@@ -19,7 +19,8 @@
     "phaser": "~2.4.3",
     "underscore": "~1.8.3",
     "validator-js": "~3.41.2",
-    "mobile-angular-ui": "~1.2.0-rc.3"
+    "mobile-angular-ui": "~1.2.0-rc.3",
+    "chance": "~0.8.0"
   },
   "resolutions": {
     "angular": "~1.4.2"
