@@ -16,6 +16,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   
   $scope.params = {
       position : 0,
+      flags : { skipped : false },
       cName : $scope.channels[0].name,
       media : {},
       ep : "",
@@ -124,12 +125,14 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     {
       console.log('forward')
       $scope.params.prev = false
+      $scope.params.skipped = true
       this.loadMedia()
     },
     prevMedia : function()
     {
       console.log('backward')
       $scope.params.prev = true
+      $scope.params.skipped = true
       this.loadMedia()
     },
     setVolume : function(){
@@ -142,6 +145,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       if ($scope.params.position > $scope.channels.length - 1) {
         $scope.params.position = 0
       }
+      $scope.params.skipped = true
       this.calculateOffset()
       this.updateParams()
     },
@@ -151,6 +155,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       if ($scope.params.position < 0) {
         $scope.params.position = $scope.channels.length - 1
       }
+      $scope.params.skipped = true
       this.calculateOffset()
       this.updateParams()
     },
@@ -309,10 +314,11 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     } /*else if (media.playerState === "PLAYING") {
       //Clear the UI objects if we aren't trying to update
       sender.clearTimerInterval();
-    }*/ else if (media.playerState === "PLAYING" && $scope.params.interrupted) {
+    }*/ else if (media.playerState === "PLAYING" && $scope.params.interrupted && $scope.params.skipped) {
       //Somewhere between 20% and 80% skip
       console.log('skip!!!')
-      $scope.params.interrupted = false
+      //$scope.params.interrupted = false
+      $scope.params.skipped = false
       sender.seekMedia( 20 + chance.integer({min: 0, max: 60}))
     }
   })
