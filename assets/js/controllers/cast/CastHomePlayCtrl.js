@@ -137,7 +137,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       $('#volume').focusout()
     },
     chanUp : function(){
-      this.saveChannelOffset()
+      //this.saveChannelOffset()
       $scope.params.position += 1
       if ($scope.params.position > $scope.channels.length - 1) {
         $scope.params.position = 0
@@ -146,7 +146,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       this.updateParams()
     },
     chanDown : function(){
-      this.saveChannelOffset()
+      //this.saveChannelOffset()
       $scope.params.position -= 1
       if ($scope.params.position < 0) {
         $scope.params.position = $scope.channels.length - 1
@@ -172,6 +172,10 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       /* pick media */
       var roll = chance.integer({min: 0, max: 100})
       var specific = $scope.channels[$scope.params.position].specific
+      console.log('media')
+      console.log($scope.media)
+      console.log('channels')
+      console.log($scope.channels)
       console.log('specific')
       console.log(specific)
       if (picked) {
@@ -193,9 +197,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         console.log('picked',tSelected)
         //If the media is not picked, make sure that the media playing before isnt the media playing now
         console.log($scope.params.media)
-        var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[chance.integer({min: 0, max: tSelected.length})].id
+        var mId = $scope.params.sticky ? $scope.params.media.id : tSelected[chance.integer({min: 0, max: tSelected.length -1})].id
         while (!$scope.params.sticky && mId === $scope.params.media.id && tSelected.length > 1) {
-          mId = tSelected[chance.integer({min: 0, max: tSelected.length})].id
+          mId = tSelected[chance.integer({min: 0, max: tSelected.length -1})].id
         }
         var media = $scope.media[mId]
         console.log('media!')
@@ -220,7 +224,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
           }else if ($scope.params.newest) {
             $scope.params.ep = media.episodes[media.episodes.length-1]
           } else {
-            $scope.params.ep = media.episodes[chance.integer({min: 0, max: media.episodes.length})]
+            $scope.params.ep = media.episodes[chance.integer({min: 0, max: media.episodes.length -1})]
           }
         }
       })
@@ -241,7 +245,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       console.log(dWait)
       //sender.seekMedia($scope.params.progress)
       
-      if (channelTmp.lastMediaCurrent + dWait > channelTmp.lastMediaDuration) {
+      this.loadMedia()
+      
+      /*if (channelTmp.lastMediaCurrent + dWait > channelTmp.lastMediaDuration) {
         $scope.params.updateOffset = (channelTmp.lastMediaCurrent + dWait) - channelTmp.lastMediaDuration
         //Here we want to pick something new
         this.loadMedia()
@@ -258,9 +264,9 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
           console.log($scope.params)
         })
         sender.loadCustomMedia( $scope.sParams.prefix + $scope.params.ep + $scope.sParams.suffix )
-      }
-      console.log('offset params')
-      console.log($scope.params)
+      }*/
+      //console.log('offset params')
+      //console.log($scope.params)
     },
     saveChannelOffset: function(){
       
@@ -294,11 +300,11 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   /*Listeners*/
   //Check to see if you can queue media in a videoview
   $scope.$on('update', function (scope, media) {
-    if (media.playerState === "PLAYING" && $scope.params.updateOffset && $scope.params.updateOffset > 0 && $scope.params.progress < 2 && !$scope.params.interrupted) {
+    if (media.playerState === "PLAYING" && $scope.params.updateOffset && !$scope.params.interrupted) {
       var mLength = sender.mediaPosition().duration
       sender.seekMedia( 100 * (($scope.params.updateOffset % mLength) / mLength))
       $scope.params.updateOffset = 0
-      $scope.controls.saveChannelOffset()
+      //$scope.controls.saveChannelOffset()
     } /*else if (media.playerState === "PLAYING") {
       //Clear the UI objects if we aren't trying to update
       sender.clearTimerInterval();
