@@ -245,6 +245,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       console.log(dWait)
       //sender.seekMedia($scope.params.progress)
       
+      $scope.params.updateOffset = 0
       this.loadMedia()
       
       /*if (channelTmp.lastMediaCurrent + dWait > channelTmp.lastMediaDuration) {
