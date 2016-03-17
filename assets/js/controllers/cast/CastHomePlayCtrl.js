@@ -1,5 +1,12 @@
 angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $scope, $http, $window, $state, sender, flash, mediaUtils)
 {
+  /*
+   * TODO:
+   * Keep iterator going after end of show
+   * Keep sticky going on channel up
+   * make progress bar stop updating when progress selected from ui
+   */
+  
   sender.setup()
   $scope.channels = $rootScope.channels
   $scope.media = $rootScope.media
@@ -16,6 +23,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   
   $scope.params = {
       position : 0,
+      progCount : 0,
       flags : { skipped : false },
       cName : $scope.channels[0].name,
       media : {},
@@ -146,7 +154,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         $scope.params.position = 0
       }
       $scope.params.skipped = true
-      this.calculateOffset()
+      this.calculateOffset(true)
       this.updateParams()
     },
     chanDown : function(){
@@ -156,7 +164,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         $scope.params.position = $scope.channels.length - 1
       }
       $scope.params.skipped = true
-      this.calculateOffset()
+      this.calculateOffset(true)
       this.updateParams()
     },
     toggleCast : function(){
@@ -167,13 +175,13 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
         sender.stopApp()
       }
     },
-    loadMedia : function(picked){
-      sender.loadCustomMedia( $scope.sParams.prefix + $scope.controls.pickEp(picked) + $scope.sParams.suffix )
+    loadMedia : function(picked, change){
+      sender.loadCustomMedia( $scope.sParams.prefix + $scope.controls.pickEp(picked, change) + $scope.sParams.suffix )
     },
     updateParams : function(){
       $scope.params.cName = $scope.channels[$scope.params.position].name
     },
-    pickEp : function(picked){
+    pickEp : function(picked, change){
       /* pick media */
       var roll = chance.integer({min: 0, max: 100})
       var specific = $scope.channels[$scope.params.position].specific
@@ -240,7 +248,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     mediaMeta : function(){
       return _.sortBy(_.map($scope.channels[$scope.params.position].specific, function(media){ return $scope.media[media.id] }),'name')
     },
-    calculateOffset: function(){
+    calculateOffset: function(change){
       var channelTmp = $scope.channels[$scope.params.position]
       var ms = moment(channelTmp.lastOffset,$scope.sParams.dateFormat).diff(moment(moment().format($scope.sParams.dateFormat),$scope.sParams.dateFormat))
       var dWait = moment.duration(Math.abs(ms)).seconds()
@@ -251,7 +259,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
       //sender.seekMedia($scope.params.progress)
       
       $scope.params.updateOffset = 0
-      this.loadMedia()
+      this.loadMedia(change ? change : false)
       
       /*if (channelTmp.lastMediaCurrent + dWait > channelTmp.lastMediaDuration) {
         $scope.params.updateOffset = (channelTmp.lastMediaCurrent + dWait) - channelTmp.lastMediaDuration
@@ -306,6 +314,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   /*Listeners*/
   //Check to see if you can queue media in a videoview
   $scope.$on('update', function (scope, media) {
+    console.log('update')
     if (media.playerState === "PLAYING" && $scope.params.updateOffset && !$scope.params.interrupted) {
       var mLength = sender.mediaPosition().duration
       sender.seekMedia( 100 * (($scope.params.updateOffset % mLength) / mLength))
@@ -323,6 +332,7 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
     }
   })
   $scope.$on('retry', function () {
+    console.log('retry')
     if ($scope.params.ep) {
       sender.loadCustomMedia( $scope.sParams.prefix + $scope.params.ep + $scope.sParams.suffix )
     }
@@ -330,13 +340,20 @@ angular.module('blast').controller('CastHomePlayCtrl', function ($rootScope, $sc
   $scope.$on('progress', function (scope, progress) {
     console.log('progress: ',progress)
     $scope.safeApply(function () {
-      $scope.params.progress = progress
+      $scope.params.progCount+=1
+      if ($scope.params.progCount > 10){
+        $scope.params.progress = progress
+        $scope.params.progCount = 0
+      }
     })
   })
   $scope.$on('finish', function () {
+    console.log('finish')
+    $scope.params.skipped = true
     $scope.controls.loadMedia()
   })
   $scope.$on('init', function () {
+    console.log('init')
     $scope.controls.init()
   })
   

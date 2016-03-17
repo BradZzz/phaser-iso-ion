@@ -139,7 +139,7 @@ module.exports = function (app) {
 			Q.all(promises).then(function(results) {
 			  _.each(results.splice(results.length-1, 1)[0], function(result){
 			    results.push(result)
-        })
+              })
 			  var promises = []
 			  _.each(results, function(result){
 			    result.name = result.name.replace(/_/g,' ').capitalize()
@@ -270,6 +270,7 @@ module.exports = function (app) {
 			  deferred.resolve(returned)
 		  }
 		})
+
 		return deferred.promise
 	}
 }

@@ -66,6 +66,7 @@ if (app.get('prod')) {
 }
 
 // setup routes
+require('./routes/stock')(app)
 require('./routes/cast')(app)
 require('./routes/user')(app)
 //require('./routes/seo')(app)
