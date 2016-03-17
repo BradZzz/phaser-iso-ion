@@ -12,13 +12,12 @@ http://www.asx.com.au/asx/research/ASXListedCompanies.csv
 var csv  = require('fast-csv')
 var fs   = require('fs')
 var Q    = require('q')
-var path = require('path').basename(__dirname)
 var finance = require('yahoo-finance')
 var moment = require('moment')
 
-var nasdaq = fs.createReadStream(path + "/../stock_csv/nasdaq.csv")
-var nyse = fs.createReadStream(path + "/../stock_csv/nyse.csv")
-var asx = fs.createReadStream(path + "/../stock_csv/asx.csv")
+var nasdaq = fs.createReadStream("./stock_csv/nasdaq.csv")
+var nyse = fs.createReadStream("./stock_csv/nyse.csv")
+var asx = fs.createReadStream("./stock_csv/asx.csv")
 
 module.exports = function (app) {
 
@@ -37,7 +36,6 @@ module.exports = function (app) {
           from: start,
           to: end,
           period: period,
-          // period: 'd'  // 'd' (daily), 'w' (weekly), 'm' (monthly), 'v' (dividends only)
         }, function (err, quotes) {
           console.log(err)
           console.log(quotes)
@@ -56,7 +54,6 @@ module.exports = function (app) {
     var exchanges = [exchangeNASDAQ, exchangeNYSE]
 
     Q.all(exchanges).then(function(gResp){
-        // render the page and pass in any flash data if it exists
         console.log("finished")
         console.log(gResp)
         return res.status(200).json(gResp)
